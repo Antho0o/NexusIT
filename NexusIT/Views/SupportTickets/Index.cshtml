@@ -1,0 +1,943 @@
+@model IEnumerable<NexusIT.Models.SupportTicket>
+@using NexusIT.Data
+
+@{
+    ViewData["Title"] = "Support Tickets";
+
+    var tickets = Model?.ToList() ?? new List<NexusIT.Models.SupportTicket>();
+
+    var totalTickets = tickets.Count;
+    var openTickets = tickets.Count(t => t.Status == "Open");
+    var inProgressTickets = tickets.Count(t => t.Status == "In Progress");
+    var waitingTickets = tickets.Count(t => t.Status == "Waiting");
+    var resolvedTickets = tickets.Count(t => t.Status == "Resolved");
+    var closedTickets = tickets.Count(t => t.Status == "Closed");
+
+    var criticalTickets = tickets.Count(t => t.Priority == "Critical");
+    var highTickets = tickets.Count(t => t.Priority == "High");
+
+    var currentSearch = ViewBag.Search as string;
+    var currentStatus = ViewBag.Status as string;
+    var currentPriority = ViewBag.Priority as string;
+    var currentCategory = ViewBag.Category as string;
+    var isStaff = User.IsInRole(AuthorizationRoles.Administrator) || User.IsInRole(AuthorizationRoles.ITManager) || User.IsInRole(AuthorizationRoles.ITTechnician);
+}
+
+
+<div class="tickets-page">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="tickets-page-header">
+
+        <div>
+
+            <span class="page-eyebrow">
+                NEXUS IT / SUPPORT
+            </span>
+
+            <h1>
+                Support Tickets
+            </h1>
+
+            <p>
+                Monitor, manage and resolve IT support requests.
+            </p>
+
+        </div>
+
+
+        <div class="tickets-header-actions">
+
+            <a asp-action="Create"
+               class="nexus-primary-button">
+
+                <span>+</span>
+                New Ticket
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <div class="ticket-stats-grid">
+
+
+        <!-- TOTAL -->
+
+        <div class="ticket-stat-card">
+
+            <div class="ticket-stat-icon">
+                ◇
+            </div>
+
+            <div class="ticket-stat-content">
+
+                <span>
+                    TOTAL TICKETS
+                </span>
+
+                <strong>
+                    @totalTickets
+                </strong>
+
+                <small>
+                    All support requests
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- OPEN -->
+
+        <div class="ticket-stat-card">
+
+            <div class="ticket-stat-icon stat-open-icon">
+                ●
+            </div>
+
+            <div class="ticket-stat-content">
+
+                <span>
+                    OPEN
+                </span>
+
+                <strong>
+                    @openTickets
+                </strong>
+
+                <small>
+                    Awaiting support
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- IN PROGRESS -->
+
+        <div class="ticket-stat-card">
+
+            <div class="ticket-stat-icon stat-progress-icon">
+                ◐
+            </div>
+
+            <div class="ticket-stat-content">
+
+                <span>
+                    IN PROGRESS
+                </span>
+
+                <strong>
+                    @inProgressTickets
+                </strong>
+
+                <small>
+                    Currently being handled
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- WAITING -->
+
+        <div class="ticket-stat-card">
+
+            <div class="ticket-stat-icon stat-waiting-icon">
+                ◌
+            </div>
+
+            <div class="ticket-stat-content">
+
+                <span>
+                    WAITING
+                </span>
+
+                <strong>
+                    @waitingTickets
+                </strong>
+
+                <small>
+                    Waiting for information
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- RESOLVED -->
+
+        <div class="ticket-stat-card">
+
+            <div class="ticket-stat-icon stat-resolved-icon">
+                ✓
+            </div>
+
+            <div class="ticket-stat-content">
+
+                <span>
+                    RESOLVED
+                </span>
+
+                <strong>
+                    @resolvedTickets
+                </strong>
+
+                <small>
+                    Successfully resolved
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- CLOSED -->
+
+        <div class="ticket-stat-card">
+
+            <div class="ticket-stat-icon stat-closed-icon">
+                ×
+            </div>
+
+            <div class="ticket-stat-content">
+
+                <span>
+                    CLOSED
+                </span>
+
+                <strong>
+                    @closedTickets
+                </strong>
+
+                <small>
+                    Completed tickets
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ALERT SUMMARY
+    ====================================================== -->
+    @if (criticalTickets > 0 || highTickets > 0)
+    {
+        <div class="ticket-priority-alert">
+
+            <div class="priority-alert-icon">
+                !
+            </div>
+
+            <div>
+
+                <strong>
+                    Priority Attention Required
+                </strong>
+
+                <span>
+
+                    @if (criticalTickets > 0)
+                    {
+                        @criticalTickets
+                        @(criticalTickets == 1 ? " critical ticket" : " critical tickets")
+                    }
+
+                    @if (criticalTickets > 0 && highTickets > 0)
+                    {
+                        <text> and </text>
+                    }
+
+                    @if (highTickets > 0)
+                    {
+                        @highTickets
+                        @(highTickets == 1 ? " high priority ticket" : " high priority tickets")
+                    }
+
+                    require attention.
+
+                </span>
+
+            </div>
+
+        </div>
+    }
+
+
+    <!-- =====================================================
+         FILTER PANEL
+    ====================================================== -->
+
+    <div class="ticket-filter-card">
+
+        <div class="filter-header">
+
+            <div>
+
+                <span class="panel-eyebrow">
+                    TICKET MANAGEMENT
+                </span>
+
+                <h2>
+                    Search & Filter
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <form asp-action="Index"
+              method="get"
+              class="ticket-filter-form">
+
+
+            <!-- SEARCH -->
+
+            <div class="ticket-search-field">
+
+                <label>
+                    Search
+                </label>
+
+                <div class="search-input-wrapper">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input type="text"
+                           name="search"
+                           value="@currentSearch"
+                           placeholder="Search tickets, employees or issues..." />
+
+                </div>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="ticket-filter-field">
+
+                <label>
+                    Status
+                </label>
+
+                <select name="status">
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    @if (currentStatus == "Open")
+                    {
+                        <option value="Open" selected>
+                            Open
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="Open">
+                            Open
+                        </option>
+                    }
+
+                    @if (currentStatus == "In Progress")
+                    {
+                        <option value="In Progress" selected>
+                            In Progress
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="In Progress">
+                            In Progress
+                        </option>
+                    }
+
+                    @if (currentStatus == "Waiting")
+                    {
+                        <option value="Waiting" selected>
+                            Waiting
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="Waiting">
+                            Waiting
+                        </option>
+                    }
+
+                    @if (currentStatus == "Resolved")
+                    {
+                        <option value="Resolved" selected>
+                            Resolved
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="Resolved">
+                            Resolved
+                        </option>
+                    }
+
+                    @if (currentStatus == "Closed")
+                    {
+                        <option value="Closed" selected>
+                            Closed
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="Closed">
+                            Closed
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- PRIORITY -->
+
+            <div class="ticket-filter-field">
+
+                <label>
+                    Priority
+                </label>
+
+                <select name="priority">
+
+                    <option value="">
+                        All Priorities
+                    </option>
+
+                    @if (currentPriority == "Critical")
+                    {
+                        <option value="Critical" selected>
+                            Critical
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="Critical">
+                            Critical
+                        </option>
+                    }
+
+                    @if (currentPriority == "High")
+                    {
+                        <option value="High" selected>
+                            High
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="High">
+                            High
+                        </option>
+                    }
+
+                    @if (currentPriority == "Medium")
+                    {
+                        <option value="Medium" selected>
+                            Medium
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="Medium">
+                            Medium
+                        </option>
+                    }
+
+                    @if (currentPriority == "Low")
+                    {
+                        <option value="Low" selected>
+                            Low
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="Low">
+                            Low
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- CATEGORY -->
+
+            <div class="ticket-filter-field">
+
+                <label>
+                    Category
+                </label>
+
+                <select name="category">
+
+                    <option value="">
+                        All Categories
+                    </option>
+
+                    @if (currentCategory == "General")
+                    {
+                        <option value="General" selected>
+                            General
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="General">
+                            General
+                        </option>
+                    }
+
+                    @if (currentCategory == "Hardware")
+                    {
+                        <option value="Hardware" selected>
+                            Hardware
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="Hardware">
+                            Hardware
+                        </option>
+                    }
+
+                    @if (currentCategory == "Software")
+                    {
+                        <option value="Software" selected>
+                            Software
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="Software">
+                            Software
+                        </option>
+                    }
+
+                    @if (currentCategory == "Network")
+                    {
+                        <option value="Network" selected>
+                            Network
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="Network">
+                            Network
+                        </option>
+                    }
+
+                    @if (currentCategory == "Security")
+                    {
+                        <option value="Security" selected>
+                            Security
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="Security">
+                            Security
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="ticket-filter-actions">
+
+                <button type="submit"
+                        class="nexus-primary-button">
+
+                    Apply Filters
+
+                </button>
+
+
+                <a asp-action="Index"
+                   class="nexus-secondary-button">
+
+                    Reset
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         TICKET LIST
+    ====================================================== -->
+
+    <div class="tickets-list-card">
+
+
+        <div class="tickets-list-header">
+
+            <div>
+
+                <span class="panel-eyebrow">
+                    SUPPORT QUEUE
+                </span>
+
+                <h2>
+                    All Tickets
+                </h2>
+
+            </div>
+
+
+            <div class="ticket-count">
+
+                <strong>
+                    @tickets.Count
+                </strong>
+
+                <span>
+                    @(tickets.Count == 1 ? "ticket" : "tickets")
+                </span>
+
+            </div>
+
+        </div>
+
+
+        @if (tickets.Any())
+        {
+
+            <div class="tickets-table-wrapper">
+
+                <table class="nexus-tickets-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Ticket
+                            </th>
+
+                            <th>
+                                Requester
+                            </th>
+
+                            <th>
+                                Priority
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Technician
+                            </th>
+
+                            <th>
+                                Created
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @foreach (var ticket in tickets)
+                        {
+                            <tr>
+
+                                <!-- TICKET -->
+
+                                <td>
+
+                                    <div class="ticket-table-title">
+
+                                        <div class="ticket-number">
+                                            #@ticket.Id.ToString("D4")
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                @ticket.Title
+                                            </strong>
+
+                                            <span>
+                                                @ticket.Category
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- REQUESTER -->
+
+                                <td>
+
+                                    @if (ticket.Employee != null)
+                                    {
+                                        <div class="ticket-table-person">
+
+                                            <div class="small-avatar">
+
+                                                @(
+                                                                                    string.IsNullOrWhiteSpace(ticket.Employee.FirstName)
+                                                                                    ? "?"
+                                                                                    : ticket.Employee.FirstName.Substring(0, 1).ToUpper()
+                                                                                    )
+
+                                </div>
+
+                                            <span>
+
+                                                @ticket.Employee.FirstName
+                                                @ticket.Employee.LastName
+
+                                            </span>
+
+                                        </div>
+                                                        }
+                                    else
+                                    {
+                                        <span class="table-muted">
+                                            Unassigned
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- PRIORITY -->
+
+                                <td>
+
+                                    @if (ticket.Priority == "Critical")
+                                    {
+                                        <span class="ticket-priority priority-critical">
+                                            Critical
+                                        </span>
+                                    }
+                                    else if (ticket.Priority == "High")
+                                    {
+                                        <span class="ticket-priority priority-high">
+                                            High
+                                        </span>
+                                    }
+                                    else if (ticket.Priority == "Low")
+                                    {
+                                        <span class="ticket-priority priority-low">
+                                            Low
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="ticket-priority priority-medium">
+                                            Medium
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- STATUS -->
+
+                                <td>
+
+                                    @if (ticket.Status == "Closed")
+                                    {
+                                        <span class="ticket-status status-closed">
+                                            Closed
+                                        </span>
+                                    }
+                                    else if (ticket.Status == "Resolved")
+                                    {
+                                        <span class="ticket-status status-resolved">
+                                            Resolved
+                                        </span>
+                                    }
+                                    else if (ticket.Status == "In Progress")
+                                    {
+                                        <span class="ticket-status status-progress">
+                                            In Progress
+                                        </span>
+                                    }
+                                    else if (ticket.Status == "Waiting")
+                                    {
+                                        <span class="ticket-status status-waiting">
+                                            Waiting
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="ticket-status status-open">
+                                            @ticket.Status
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- TECHNICIAN -->
+
+                                <td>
+
+                                    @if (string.IsNullOrWhiteSpace(ticket.AssignedTo))
+                                    {
+                                        <span class="table-muted">
+                                            Unassigned
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="technician-name">
+                                            @ticket.AssignedTo
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- CREATED -->
+
+                                <td>
+
+                                    <div class="ticket-created-date">
+
+                                        <strong>
+                                            @ticket.CreatedDate.ToString("dd MMM yyyy")
+                                        </strong>
+
+                                        <span>
+                                            @ticket.CreatedDate.ToString("HH:mm")
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- ACTIONS -->
+
+                                <td>
+
+                                    <div class="ticket-row-actions">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@ticket.Id"
+                                           class="ticket-view-button">
+
+                                            View
+
+                                        </a>
+
+
+                                        @if (isStaff)
+                                        {
+                                        <a asp-action="Edit"
+                                           asp-route-id="@ticket.Id"
+                                           class="ticket-edit-button">
+
+                                            Edit
+
+                                        </a>
+                                        }
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        }
+        else
+        {
+
+            <div class="tickets-empty-state">
+
+                <div class="empty-ticket-icon">
+                    ◇
+                </div>
+
+                <h3>
+                    No tickets found
+                </h3>
+
+                <p>
+                    There are no support tickets matching your current filters.
+                </p>
+
+                <div>
+
+                    <a asp-action="Index"
+                       class="nexus-secondary-button">
+
+                        Clear Filters
+
+                    </a>
+
+                    <a asp-action="Create"
+                       class="nexus-primary-button">
+
+                        Create Ticket
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        }
+
+    </div>
+
+</div>

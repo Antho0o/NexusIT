@@ -1,0 +1,109 @@
+﻿@{
+    Layout = null;
+    var title = ViewData["Title"]?.ToString() ?? "NexusIT";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <meta name="theme-color"
+          content="#07090d" />
+
+    <title>
+        @title - NexusIT
+    </title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+</head>
+
+<body class="auth-layout">
+
+    <div class="auth-background">
+
+        <div class="auth-glow auth-glow-one"></div>
+
+        <div class="auth-glow auth-glow-two"></div>
+
+    </div>
+
+
+    <!-- =====================================================
+         AUTHENTICATION PAGE
+         ===================================================== -->
+
+    <main class="auth-container">
+
+        <div class="auth-brand">
+
+            <div class="auth-brand-mark">
+                N
+            </div>
+
+            <div class="auth-brand-name">
+                NEXUSIT
+            </div>
+
+            <div class="auth-brand-subtitle">
+                IT MANAGEMENT
+            </div>
+
+        </div>
+
+
+        <!-- PAGE CONTENT -->
+        @RenderBody()
+
+
+        <div class="auth-footer">
+
+            <span>
+                © @DateTime.Now.Year NexusIT
+            </span>
+
+            <span>
+                Secure IT Management Platform
+            </span>
+
+        </div>
+
+    </main>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>

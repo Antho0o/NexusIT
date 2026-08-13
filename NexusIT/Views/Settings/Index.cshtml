@@ -1,0 +1,475 @@
+﻿@model NexusIT.Models.SystemSetting
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<div class="settings-page">
+
+    <!-- HEADER -->
+    <div class="settings-header">
+
+        <div>
+            <span class="page-eyebrow">
+                NEXUS IT / CONFIGURATION
+            </span>
+
+            <h1>
+                Settings
+            </h1>
+
+            <p>
+                Configure your NexusIT system preferences and defaults.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="settings-success">
+
+            <span class="settings-success-icon">
+                ✓
+            </span>
+
+            <div>
+                <strong>
+                    Settings saved
+                </strong>
+
+                <span>
+                    @TempData["SuccessMessage"]
+                </span>
+            </div>
+
+        </div>
+    }
+
+
+    <!-- SETTINGS CONTENT -->
+    <div class="settings-layout">
+
+        <!-- GENERAL SETTINGS -->
+        <section class="settings-panel">
+
+            <div class="settings-panel-header">
+
+                <div class="settings-panel-icon">
+                    ⚙
+                </div>
+
+                <div>
+                    <span class="panel-eyebrow">
+                        GENERAL
+                    </span>
+
+                    <h2>
+                        System Configuration
+                    </h2>
+
+                    <p>
+                        Configure the basic identity and regional settings
+                        for your NexusIT installation.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <form asp-action="Index"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="settings-validation">
+                </div>
+
+
+                <div class="settings-form-grid">
+
+                    <!-- SYSTEM NAME -->
+                    <div class="settings-form-group">
+
+                        <label asp-for="SystemName">
+                            System Name
+                        </label>
+
+                        <input asp-for="SystemName"
+                               class="settings-input"
+                               placeholder="NexusIT" />
+
+                        <span asp-validation-for="SystemName"
+                              class="settings-field-validation">
+                        </span>
+
+                        <small>
+                            The name displayed throughout the application.
+                        </small>
+
+                    </div>
+
+
+                    <!-- ORGANISATION -->
+                    <div class="settings-form-group">
+
+                        <label asp-for="OrganisationName">
+                            Organisation Name
+                        </label>
+
+                        <input asp-for="OrganisationName"
+                               class="settings-input"
+                               placeholder="Your Organisation" />
+
+                        <span asp-validation-for="OrganisationName"
+                              class="settings-field-validation">
+                        </span>
+
+                        <small>
+                            Your company or organisation name.
+                        </small>
+
+                    </div>
+
+
+                    <!-- CURRENCY -->
+                    <div class="settings-form-group">
+
+                        <label asp-for="Currency">
+                            Currency
+                        </label>
+
+                        <select asp-for="Currency"
+                                class="settings-input">
+
+                            <option value="USD">
+                                USD — US Dollar
+                            </option>
+
+                            <option value="ZAR">
+                                ZAR — South African Rand
+                            </option>
+
+                            <option value="GBP">
+                                GBP — British Pound
+                            </option>
+
+                            <option value="EUR">
+                                EUR — Euro
+                            </option>
+
+                            <option value="AUD">
+                                AUD — Australian Dollar
+                            </option>
+
+                            <option value="CAD">
+                                CAD — Canadian Dollar
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="Currency"
+                              class="settings-field-validation">
+                        </span>
+
+                        <small>
+                            Used when displaying asset and maintenance costs.
+                        </small>
+
+                    </div>
+
+
+                    <!-- DATE FORMAT -->
+                    <div class="settings-form-group">
+
+                        <label asp-for="DateFormat">
+                            Date Format
+                        </label>
+
+                        <select asp-for="DateFormat"
+                                class="settings-input">
+
+                            <option value="dd MMM yyyy">
+                                25 Jun 2026
+                            </option>
+
+                            <option value="dd/MM/yyyy">
+                                25/06/2026
+                            </option>
+
+                            <option value="MM/dd/yyyy">
+                                06/25/2026
+                            </option>
+
+                            <option value="yyyy-MM-dd">
+                                2026-06-25
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="DateFormat"
+                              class="settings-field-validation">
+                        </span>
+
+                        <small>
+                            Controls how dates are presented throughout NexusIT.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TICKET DEFAULTS -->
+                <div class="settings-section-divider"></div>
+
+                <div class="settings-subsection">
+
+                    <span class="panel-eyebrow">
+                        SERVICE DESK
+                    </span>
+
+                    <h3>
+                        Ticket Defaults
+                    </h3>
+
+                    <p>
+                        Set the default values used when creating new support
+                        tickets.
+                    </p>
+
+                </div>
+
+
+                <div class="settings-form-grid">
+
+                    <!-- DEFAULT PRIORITY -->
+                    <div class="settings-form-group">
+
+                        <label asp-for="DefaultTicketPriority">
+                            Default Ticket Priority
+                        </label>
+
+                        <select asp-for="DefaultTicketPriority"
+                                class="settings-input">
+
+                            <option value="Low">
+                                Low
+                            </option>
+
+                            <option value="Medium">
+                                Medium
+                            </option>
+
+                            <option value="High">
+                                High
+                            </option>
+
+                            <option value="Critical">
+                                Critical
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="DefaultTicketPriority"
+                              class="settings-field-validation">
+                        </span>
+
+                        <small>
+                            New tickets will use this priority by default.
+                        </small>
+
+                    </div>
+
+
+                    <!-- DEFAULT STATUS -->
+                    <div class="settings-form-group">
+
+                        <label asp-for="DefaultTicketStatus">
+                            Default Ticket Status
+                        </label>
+
+                        <select asp-for="DefaultTicketStatus"
+                                class="settings-input">
+
+                            <option value="Open">
+                                Open
+                            </option>
+
+                            <option value="In Progress">
+                                In Progress
+                            </option>
+
+                            <option value="Waiting">
+                                Waiting
+                            </option>
+
+                            <option value="Closed">
+                                Closed
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="DefaultTicketStatus"
+                              class="settings-field-validation">
+                        </span>
+
+                        <small>
+                            New tickets will use this status by default.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+                <div class="settings-actions">
+
+                    <button type="submit"
+                            class="nexus-primary-button">
+
+                        <span>
+                            ✓
+                        </span>
+
+                        Save Settings
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- INFORMATION PANEL -->
+        <aside class="settings-side-panel">
+
+            <div class="settings-info-card">
+
+                <div class="settings-info-icon">
+                    ◈
+                </div>
+
+                <span class="panel-eyebrow">
+                    NEXUS IT
+                </span>
+
+                <h3>
+                    System Preferences
+                </h3>
+
+                <p>
+                    These settings control how NexusIT presents information
+                    across the platform.
+                </p>
+
+            </div>
+
+
+            <div class="settings-status-card">
+
+                <div class="settings-status-header">
+
+                    <span class="settings-status-dot"></span>
+
+                    <strong>
+                        System Operational
+                    </strong>
+
+                </div>
+
+                <p>
+                    All NexusIT services are currently running normally.
+                </p>
+
+            </div>
+
+
+            <div class="settings-current-card">
+
+                <span class="panel-eyebrow">
+                    CURRENT CONFIGURATION
+                </span>
+
+                <div class="settings-current-row">
+
+                    <span>
+                        System
+                    </span>
+
+                    <strong>
+                        @Model.SystemName
+                    </strong>
+
+                </div>
+
+                <div class="settings-current-row">
+
+                    <span>
+                        Currency
+                    </span>
+
+                    <strong>
+                        @Model.Currency
+                    </strong>
+
+                </div>
+
+                <div class="settings-current-row">
+
+                    <span>
+                        Date Format
+                    </span>
+
+                    <strong>
+                        @Model.DateFormat
+                    </strong>
+
+                </div>
+
+                <div class="settings-current-row">
+
+                    <span>
+                        Ticket Priority
+                    </span>
+
+                    <strong>
+                        @Model.DefaultTicketPriority
+                    </strong>
+
+                </div>
+
+                <div class="settings-current-row">
+
+                    <span>
+                        Ticket Status
+                    </span>
+
+                    <strong>
+                        @Model.DefaultTicketStatus
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

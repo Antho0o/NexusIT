@@ -1,0 +1,311 @@
+@model NexusIT.Models.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    var now = DateTime.Now;
+}
+
+<div class="nexus-dashboard-v2">
+    <section class="nd2-hero">
+        <div>
+            <span class="nd2-eyebrow">NEXUS IT / OPERATIONS</span>
+            <h1>IT Operations Dashboard</h1>
+            <p>Monitor the health of your service desk, assets and IT environment.</p>
+        </div>
+
+        <div class="nd2-hero-actions">
+            <div class="nd2-date-card">
+                <span>Today</span>
+                <strong>@now.ToString("dddd, dd MMMM yyyy")</strong>
+            </div>
+            <a asp-controller="SupportTickets" asp-action="Create" class="nd2-primary">+ New Ticket</a>
+        </div>
+    </section>
+
+    <section class="nd2-kpis">
+        <a asp-controller="Employees" asp-action="Index" class="nd2-kpi">
+            <div class="nd2-kpi-head"><span>EMPLOYEES</span><i>◉</i></div>
+            <strong>@Model.TotalEmployees</strong>
+            <small><b>@Model.ActiveEmployees</b> active employees</small>
+        </a>
+
+        <a asp-controller="Assets" asp-action="Index" class="nd2-kpi">
+            <div class="nd2-kpi-head"><span>IT ASSETS</span><i>▣</i></div>
+            <strong>@Model.TotalAssets</strong>
+            <small><b>@Model.AssignedAssets</b> assigned · @Model.AvailableAssets available</small>
+        </a>
+
+        <a asp-controller="SupportTickets" asp-action="Index" asp-route-status="Open" class="nd2-kpi">
+            <div class="nd2-kpi-head"><span>OPEN TICKETS</span><i>◇</i></div>
+            <strong>@Model.OpenTickets</strong>
+            <small><b>@Model.InProgressTickets</b> currently in progress</small>
+        </a>
+
+        <a asp-controller="SupportTickets" asp-action="Index" class="nd2-kpi nd2-kpi-alert">
+            <div class="nd2-kpi-head"><span>NEEDS ATTENTION</span><i>!</i></div>
+            <strong>@Model.HighPriorityTickets</strong>
+            <small><b>@Model.CriticalTickets</b> critical · high priority active</small>
+        </a>
+    </section>
+
+    <section class="nd2-grid nd2-grid-top">
+        <div class="nd2-panel nd2-service-panel">
+            <div class="nd2-panel-head">
+                <div>
+                    <span class="nd2-eyebrow">SERVICE DESK</span>
+                    <h2>Ticket Status</h2>
+                </div>
+                <a asp-controller="SupportTickets" asp-action="Index">View all →</a>
+            </div>
+
+            <div class="nd2-status-list">
+                <a asp-controller="SupportTickets" asp-action="Index" asp-route-status="Open" class="nd2-status-row">
+                    <div><span class="nd2-dot nd2-dot-open"></span><span>Open</span></div>
+                    <strong>@Model.OpenTickets</strong>
+                    <div class="nd2-progress"><span style="width:@Model.OpenPercentage%"></span></div>
+                </a>
+                <a asp-controller="SupportTickets" asp-action="Index" asp-route-status="In Progress" class="nd2-status-row">
+                    <div><span class="nd2-dot nd2-dot-progress"></span><span>In Progress</span></div>
+                    <strong>@Model.InProgressTickets</strong>
+                    <div class="nd2-progress"><span style="width:@Model.InProgressPercentage%"></span></div>
+                </a>
+                <a asp-controller="SupportTickets" asp-action="Index" asp-route-status="Waiting" class="nd2-status-row">
+                    <div><span class="nd2-dot nd2-dot-waiting"></span><span>Waiting</span></div>
+                    <strong>@Model.WaitingTickets</strong>
+                    <div class="nd2-progress"><span style="width:@Model.WaitingPercentage%"></span></div>
+                </a>
+                <a asp-controller="SupportTickets" asp-action="Index" asp-route-status="Resolved" class="nd2-status-row">
+                    <div><span class="nd2-dot nd2-dot-resolved"></span><span>Resolved</span></div>
+                    <strong>@Model.ResolvedTickets</strong>
+                    <div class="nd2-progress"><span style="width:@Model.ResolvedPercentage%"></span></div>
+                </a>
+                <a asp-controller="SupportTickets" asp-action="Index" asp-route-status="Closed" class="nd2-status-row">
+                    <div><span class="nd2-dot nd2-dot-closed"></span><span>Closed</span></div>
+                    <strong>@Model.ClosedTickets</strong>
+                    <div class="nd2-progress"><span style="width:@Model.ClosedPercentage%"></span></div>
+                </a>
+            </div>
+        </div>
+
+        <div class="nd2-panel nd2-sla-panel">
+            <div class="nd2-panel-head">
+                <div>
+                    <span class="nd2-eyebrow">SERVICE LEVELS</span>
+                    <h2>SLA Health</h2>
+                </div>
+                <span class="nd2-health-badge @(Model.SlaBreachedTickets > 0 ? "nd2-health-warning" : "nd2-health-good")">
+                    @Model.SlaHealthPercentage% healthy
+                </span>
+            </div>
+
+            <div class="nd2-sla-ring" style="--sla:@Model.SlaHealthPercentage">
+                <div><strong>@Model.SlaHealthPercentage%</strong><span>within SLA</span></div>
+            </div>
+
+            <div class="nd2-sla-stats">
+                <div><span class="nd2-mini-dot nd2-good"></span><strong>@Model.SlaWithinTickets</strong><small>On track</small></div>
+                <div><span class="nd2-mini-dot nd2-risk"></span><strong>@Model.SlaAtRiskTickets</strong><small>At risk</small></div>
+                <div><span class="nd2-mini-dot nd2-breach"></span><strong>@Model.SlaBreachedTickets</strong><small>Breached</small></div>
+            </div>
+
+            <div class="nd2-sla-breakdown">
+                <div class="nd2-sla-breakdown-head">
+                    <span>Response SLA</span>
+                    <strong>@Model.ActiveResponseSlaTickets active</strong>
+                </div>
+                <div class="nd2-sla-breakdown-bar">
+                    <span style="width:@(Model.ActiveResponseSlaTickets > 0 ? Math.Round(Model.ResponseSlaWithinTickets * 100d / Model.ActiveResponseSlaTickets) : 0)%"></span>
+                </div>
+                <div class="nd2-sla-breakdown-meta">
+                    <span>@Model.ResponseSlaWithinTickets on track</span>
+                    <span>@Model.ResponseSlaAtRiskTickets at risk</span>
+                    <span>@Model.ResponseSlaBreachedTickets breached</span>
+                </div>
+            </div>
+
+            <div class="nd2-sla-breakdown">
+                <div class="nd2-sla-breakdown-head">
+                    <span>Resolution SLA</span>
+                    <strong>@Model.ActiveResolutionSlaTickets active</strong>
+                </div>
+                <div class="nd2-sla-breakdown-bar resolution">
+                    <span style="width:@(Model.ActiveResolutionSlaTickets > 0 ? Math.Round(Model.ResolutionSlaWithinTickets * 100d / Model.ActiveResolutionSlaTickets) : 0)%"></span>
+                </div>
+                <div class="nd2-sla-breakdown-meta">
+                    <span>@Model.ResolutionSlaWithinTickets on track</span>
+                    <span>@Model.ResolutionSlaAtRiskTickets at risk</span>
+                    <span>@Model.ResolutionSlaBreachedTickets breached</span>
+                </div>
+            </div>
+
+            <p class="nd2-muted">Response and resolution SLAs are monitored separately so overdue work is visible before it becomes a service failure.</p>
+        </div>
+
+        <div class="nd2-panel nd2-maintenance-panel">
+            <div class="nd2-panel-head">
+                <div>
+                    <span class="nd2-eyebrow">ASSET OPERATIONS</span>
+                    <h2>Maintenance</h2>
+                </div>
+                <a asp-controller="Maintenance" asp-action="Index">Manage →</a>
+            </div>
+
+            <div class="nd2-maintenance-grid">
+                <div><span>Upcoming</span><strong>@Model.UpcomingMaintenance</strong><small>scheduled</small></div>
+                <div class="nd2-maintenance-today"><span>Today</span><strong>@Model.DueTodayMaintenance</strong><small>due today</small></div>
+                <div class="nd2-maintenance-danger"><span>Overdue</span><strong>@Model.OverdueMaintenance</strong><small>needs action</small></div>
+                <div><span>Completed</span><strong>@Model.CompletedMaintenance</strong><small>all time</small></div>
+            </div>
+
+            <div class="nd2-cost-row">
+                <div><span>Maintenance spend</span><small>This month</small></div>
+                <strong>R @Model.MonthlyMaintenanceCost.ToString("N2")</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="nd2-grid nd2-grid-middle">
+        <div class="nd2-panel">
+            <div class="nd2-panel-head">
+                <div>
+                    <span class="nd2-eyebrow">SERVICE DESK</span>
+                    <h2>Recent Support Tickets</h2>
+                </div>
+                <a asp-controller="SupportTickets" asp-action="Index">View all →</a>
+            </div>
+
+            @if (Model.RecentTickets.Any())
+            {
+                <div class="nd2-list">
+                    @foreach (var ticket in Model.RecentTickets)
+                    {
+                        <a asp-controller="SupportTickets" asp-action="Details" asp-route-id="@ticket.Id" class="nd2-list-item">
+                            <div class="nd2-ticket-id">#@ticket.Id.ToString("D4")</div>
+                            <div class="nd2-list-main">
+                                <strong>@ticket.Title</strong>
+                                <span>
+                                    @(ticket.Employee == null ? "Unassigned employee" : $"{ticket.Employee.FirstName} {ticket.Employee.LastName}")
+                                    · @ticket.Category
+                                </span>
+                            </div>
+                            <div class="nd2-list-meta">
+                                <span class="nd2-pill nd2-priority-@ticket.Priority.ToLowerInvariant()">@ticket.Priority</span>
+                                <span class="nd2-pill nd2-status-@ticket.Status.ToLowerInvariant().Replace(" ", "-")">@ticket.Status</span>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="nd2-empty"><strong>No support tickets yet</strong><span>Create a ticket to start tracking service desk activity.</span></div>
+            }
+        </div>
+
+        <div class="nd2-panel">
+            <div class="nd2-panel-head">
+                <div>
+                    <span class="nd2-eyebrow">ACTIVITY</span>
+                    <h2>Recent Activity</h2>
+                </div>
+                <a asp-controller="ActivityLogs" asp-action="Index">Audit log →</a>
+            </div>
+
+            @if (Model.RecentActivity.Any())
+            {
+                <div class="nd2-activity-list">
+                    @foreach (var activity in Model.RecentActivity)
+                    {
+                        <div class="nd2-activity-item">
+                            <div class="nd2-activity-icon">↗</div>
+                            <div>
+                                <strong>@activity.Action</strong>
+                                <p>@activity.Description</p>
+                                <small>@activity.PerformedBy · @activity.CreatedDate.ToString("dd MMM, HH:mm")</small>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="nd2-empty"><strong>No activity recorded</strong><span>System activity will appear here as the platform is used.</span></div>
+            }
+        </div>
+    </section>
+
+    <section class="nd2-grid nd2-grid-bottom">
+        <div class="nd2-panel">
+            <div class="nd2-panel-head">
+                <div>
+                    <span class="nd2-eyebrow">ASSET MANAGEMENT</span>
+                    <h2>Recent Assets</h2>
+                </div>
+                <a asp-controller="Assets" asp-action="Index">View all →</a>
+            </div>
+
+            @if (Model.RecentAssets.Any())
+            {
+                <div class="nd2-list">
+                    @foreach (var asset in Model.RecentAssets)
+                    {
+                        <a asp-controller="Assets" asp-action="Details" asp-route-id="@asset.Id" class="nd2-list-item">
+                            <div class="nd2-asset-icon">▣</div>
+                            <div class="nd2-list-main">
+                                <strong>@asset.AssetTag</strong>
+                                <span>@asset.Brand @asset.Model · @asset.AssetType</span>
+                            </div>
+                            <div class="nd2-list-meta">
+                                <span class="nd2-pill nd2-asset-@asset.Status.ToLowerInvariant().Replace(" ", "-")">@asset.Status</span>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="nd2-empty"><strong>No assets registered</strong><span>Add your first IT asset to begin tracking the environment.</span></div>
+            }
+        </div>
+
+        <div class="nd2-panel nd2-analytics-panel">
+            <div class="nd2-panel-head">
+                <div>
+                    <span class="nd2-eyebrow">ANALYTICS</span>
+                    <h2>Service Desk Snapshot</h2>
+                </div>
+                <a asp-controller="Reports" asp-action="Index">Full reports →</a>
+            </div>
+
+            <div class="nd2-analytics-summary">
+                <div><strong>@Model.ResolutionRatePercentage%</strong><span>Resolution rate</span></div>
+                <div><strong>@Model.TotalTickets</strong><span>Total tickets</span></div>
+                <div><strong>@Model.TotalAssets</strong><span>Tracked assets</span></div>
+            </div>
+
+            <div class="nd2-category-list">
+                @foreach (var category in Model.TicketCategories)
+                {
+                    var width = Model.TotalTickets > 0 ? Math.Max(6, (int)Math.Round(category.Value * 100d / Model.TotalTickets)) : 0;
+                    <div class="nd2-category-row">
+                        <div><span>@category.Key</span><strong>@category.Value</strong></div>
+                        <div class="nd2-category-bar"><span style="width:@width%"></span></div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <section class="nd2-quick-actions">
+        <div>
+            <span class="nd2-eyebrow">QUICK ACTIONS</span>
+            <h2>Manage NexusIT</h2>
+        </div>
+        <div class="nd2-action-grid">
+            <a asp-controller="SupportTickets" asp-action="Create"><span>◇</span><div><strong>Create Ticket</strong><small>Log a support issue</small></div></a>
+            <a asp-controller="Assets" asp-action="Create"><span>▣</span><div><strong>Add Asset</strong><small>Register IT equipment</small></div></a>
+            <a asp-controller="Employees" asp-action="Create"><span>♙</span><div><strong>Add Employee</strong><small>Add a team member</small></div></a>
+            <a asp-controller="Maintenance" asp-action="Create"><span>↻</span><div><strong>Schedule Maintenance</strong><small>Plan asset maintenance</small></div></a>
+        </div>
+    </section>
+</div>

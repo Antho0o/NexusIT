@@ -1,0 +1,596 @@
+﻿@{
+    ViewData["Title"] = "Help & Support";
+}
+
+<div class="help-page">
+
+    <!-- HEADER -->
+    <div class="help-header">
+
+        <div>
+            <span class="page-eyebrow">
+                NEXUS IT / SUPPORT
+            </span>
+
+            <h1>
+                Help & Support
+            </h1>
+
+            <p>
+                Find troubleshooting guides, answers and support resources.
+            </p>
+        </div>
+
+        <a asp-controller="SupportTickets"
+           asp-action="Create"
+           class="nexus-primary-button">
+            + Create Ticket
+        </a>
+
+    </div>
+
+
+    <!-- SEARCH -->
+    <div class="help-search-panel">
+
+        <div class="help-search-icon">
+            ⌕
+        </div>
+
+        <div>
+            <strong>
+                How can we help?
+            </strong>
+
+            <span>
+                Search the knowledge base or browse the guides below.
+            </span>
+        </div>
+
+        <input type="text"
+               id="helpSearch"
+               class="help-search-input"
+               placeholder="Search help articles..." />
+
+    </div>
+
+
+    <!-- QUICK SUPPORT -->
+    <div class="help-section">
+
+        <div class="help-section-header">
+
+            <div>
+                <span class="panel-eyebrow">
+                    QUICK SUPPORT
+                </span>
+
+                <h2>
+                    Common Issues
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="help-card-grid">
+
+            <a href="#network"
+               class="help-card">
+
+                <div class="help-card-icon">
+                    ◉
+                </div>
+
+                <div>
+                    <strong>
+                        Network & Wi-Fi
+                    </strong>
+
+                    <span>
+                        Troubleshoot connection and network problems.
+                    </span>
+                </div>
+
+                <span class="help-card-arrow">
+                    →
+                </span>
+
+            </a>
+
+
+            <a href="#windows"
+               class="help-card">
+
+                <div class="help-card-icon">
+                    ▣
+                </div>
+
+                <div>
+                    <strong>
+                        Windows Issues
+                    </strong>
+
+                    <span>
+                        Common Windows troubleshooting steps.
+                    </span>
+                </div>
+
+                <span class="help-card-arrow">
+                    →
+                </span>
+
+            </a>
+
+
+            <a href="#printer"
+               class="help-card">
+
+                <div class="help-card-icon">
+                    ▤
+                </div>
+
+                <div>
+                    <strong>
+                        Printer Problems
+                    </strong>
+
+                    <span>
+                        Resolve printer and printing issues.
+                    </span>
+                </div>
+
+                <span class="help-card-arrow">
+                    →
+                </span>
+
+            </a>
+
+
+            <a href="#access"
+               class="help-card">
+
+                <div class="help-card-icon">
+                    ◇
+                </div>
+
+                <div>
+                    <strong>
+                        Account & Access
+                    </strong>
+
+                    <span>
+                        Help with accounts, permissions and access.
+                    </span>
+                </div>
+
+                <span class="help-card-arrow">
+                    →
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- KNOWLEDGE BASE -->
+    <div class="help-section">
+
+        <div class="help-section-header">
+
+            <div>
+                <span class="panel-eyebrow">
+                    KNOWLEDGE BASE
+                </span>
+
+                <h2>
+                    Troubleshooting Guides
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="help-guides">
+
+
+            <!-- NETWORK -->
+            <article class="help-guide"
+                     id="network">
+
+                <div class="help-guide-header">
+
+                    <div class="help-guide-icon">
+                        ◉
+                    </div>
+
+                    <div>
+                        <span>
+                            NETWORK
+                        </span>
+
+                        <h3>
+                            Wi-Fi connection problems
+                        </h3>
+                    </div>
+
+                </div>
+
+                <ol>
+
+                    <li>
+                        Check that Wi-Fi is enabled on the device.
+                    </li>
+
+                    <li>
+                        Confirm the device is connected to the correct network.
+                    </li>
+
+                    <li>
+                        Disconnect and reconnect to the Wi-Fi network.
+                    </li>
+
+                    <li>
+                        Restart the computer if the connection remains unavailable.
+                    </li>
+
+                    <li>
+                        If other devices are also affected, check the network equipment.
+                    </li>
+
+                </ol>
+
+                <a asp-controller="SupportTickets"
+                   asp-action="Create"
+                   class="help-guide-link">
+
+                    Still having problems? Create a ticket →
+
+                </a>
+
+            </article>
+
+
+            <!-- WINDOWS -->
+            <article class="help-guide"
+                     id="windows">
+
+                <div class="help-guide-header">
+
+                    <div class="help-guide-icon">
+                        ▣
+                    </div>
+
+                    <div>
+                        <span>
+                            WINDOWS
+                        </span>
+
+                        <h3>
+                            General Windows troubleshooting
+                        </h3>
+                    </div>
+
+                </div>
+
+                <ol>
+
+                    <li>
+                        Restart the computer and check whether the problem persists.
+                    </li>
+
+                    <li>
+                        Check Windows Update for pending updates.
+                    </li>
+
+                    <li>
+                        Close applications that are not responding.
+                    </li>
+
+                    <li>
+                        Check available disk space.
+                    </li>
+
+                    <li>
+                        Record any error messages before creating a support ticket.
+                    </li>
+
+                </ol>
+
+                <a asp-controller="SupportTickets"
+                   asp-action="Create"
+                   class="help-guide-link">
+
+                    Still having problems? Create a ticket →
+
+                </a>
+
+            </article>
+
+
+            <!-- PRINTER -->
+            <article class="help-guide"
+                     id="printer">
+
+                <div class="help-guide-header">
+
+                    <div class="help-guide-icon">
+                        ▤
+                    </div>
+
+                    <div>
+                        <span>
+                            HARDWARE
+                        </span>
+
+                        <h3>
+                            Printer troubleshooting
+                        </h3>
+                    </div>
+
+                </div>
+
+                <ol>
+
+                    <li>
+                        Check that the printer is powered on.
+                    </li>
+
+                    <li>
+                        Check the printer's network or USB connection.
+                    </li>
+
+                    <li>
+                        Confirm that paper and consumables are available.
+                    </li>
+
+                    <li>
+                        Check the Windows printer queue for stuck jobs.
+                    </li>
+
+                    <li>
+                        Restart the printer and try again.
+                    </li>
+
+                </ol>
+
+                <a asp-controller="SupportTickets"
+                   asp-action="Create"
+                   class="help-guide-link">
+
+                    Still having problems? Create a ticket →
+
+                </a>
+
+            </article>
+
+
+            <!-- ACCESS -->
+            <article class="help-guide"
+                     id="access">
+
+                <div class="help-guide-header">
+
+                    <div class="help-guide-icon">
+                        ◇
+                    </div>
+
+                    <div>
+                        <span>
+                            ACCESS
+                        </span>
+
+                        <h3>
+                            Account and access problems
+                        </h3>
+                    </div>
+
+                </div>
+
+                <ol>
+
+                    <li>
+                        Confirm that you are using the correct account.
+                    </li>
+
+                    <li>
+                        Check whether the account is locked or disabled.
+                    </li>
+
+                    <li>
+                        Confirm that the required system or resource is available.
+                    </li>
+
+                    <li>
+                        Do not share your password with another user.
+                    </li>
+
+                    <li>
+                        Create a support ticket if access cannot be restored.
+                    </li>
+
+                </ol>
+
+                <a asp-controller="SupportTickets"
+                   asp-action="Create"
+                   class="help-guide-link">
+
+                    Still having problems? Create a ticket →
+
+                </a>
+
+            </article>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- FAQ -->
+    <div class="help-section">
+
+        <div class="help-section-header">
+
+            <div>
+                <span class="panel-eyebrow">
+                    FAQ
+                </span>
+
+                <h2>
+                    Frequently Asked Questions
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="help-faq">
+
+            <details>
+                <summary>
+                    How do I report an IT problem?
+                    <span>+</span>
+                </summary>
+
+                <p>
+                    Open Support Tickets from the sidebar and select
+                    Create Ticket. Provide a clear title, description,
+                    category and priority.
+                </p>
+
+            </details>
+
+
+            <details>
+                <summary>
+                    How do I check an employee's assigned equipment?
+                    <span>+</span>
+                </summary>
+
+                <p>
+                    Open Assets and select the relevant asset. The asset
+                    details page shows the employee currently assigned to it.
+                </p>
+
+            </details>
+
+
+            <details>
+                <summary>
+                    How can I check maintenance history?
+                    <span>+</span>
+                </summary>
+
+                <p>
+                    Open Maintenance to view scheduled, active and completed
+                    maintenance records.
+                </p>
+
+            </details>
+
+
+            <details>
+                <summary>
+                    Where can I see system activity?
+                    <span>+</span>
+                </summary>
+
+                <p>
+                    Open Activity Log to view recorded changes and actions
+                    performed throughout NexusIT.
+                </p>
+
+            </details>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUPPORT CTA -->
+    <div class="help-support-card">
+
+        <div>
+
+            <span class="panel-eyebrow">
+                NEED MORE HELP?
+            </span>
+
+            <h2>
+                Contact the IT Service Desk
+            </h2>
+
+            <p>
+                If you cannot resolve an issue using the guides above,
+                create a support ticket and provide as much information
+                as possible.
+            </p>
+
+        </div>
+
+        <a asp-controller="SupportTickets"
+           asp-action="Create"
+           class="nexus-primary-button">
+
+            Create Support Ticket
+
+        </a>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        const searchInput =
+            document.getElementById("helpSearch");
+
+        const guides =
+            document.querySelectorAll(".help-guide");
+
+        const cards =
+            document.querySelectorAll(".help-card");
+
+        searchInput?.addEventListener("input", function () {
+
+            const search =
+                this.value.toLowerCase().trim();
+
+            guides.forEach(function (guide) {
+
+                const text =
+                    guide.textContent.toLowerCase();
+
+                guide.style.display =
+                    text.includes(search)
+                        ? ""
+                        : "none";
+
+            });
+
+            cards.forEach(function (card) {
+
+                const text =
+                    card.textContent.toLowerCase();
+
+                card.style.display =
+                    text.includes(search)
+                        ? ""
+                        : "none";
+
+            });
+
+        });
+
+    </script>
+
+}

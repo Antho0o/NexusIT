@@ -1,0 +1,234 @@
+@model NexusIT.Models.SupportTicket
+
+@{
+    ViewData["Title"] = "Edit Ticket";
+}
+
+<div class="ticket-form-page">
+
+    <div class="ticket-form-header">
+
+        <a asp-action="Index" class="back-link">
+            ← Back to Tickets
+        </a>
+
+        <span class="page-eyebrow">
+            NEXUS IT / SUPPORT / EDIT
+        </span>
+
+        <h1>Edit Ticket #@Model.Id.ToString("D4")</h1>
+
+        <p>Update the support request and its current status.</p>
+
+    </div>
+
+
+    <div class="ticket-form-panel">
+
+        <div class="form-panel-header">
+
+            <span class="panel-eyebrow">
+                TICKET INFORMATION
+            </span>
+
+            <h2>@Model.Title</h2>
+
+        </div>
+
+
+        <form asp-action="Edit" method="post">
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedDate" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="form-validation">
+            </div>
+
+
+            <div class="ticket-form-grid">
+
+                <div class="form-group form-group-full">
+
+                    <label asp-for="Title">
+                        Issue Title
+                    </label>
+
+                    <input asp-for="Title"
+                           class="nexus-input" />
+
+                    <span asp-validation-for="Title"
+                          class="field-validation">
+                    </span>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="Category">
+                        Category
+                    </label>
+
+                    <select asp-for="Category"
+                            class="nexus-input">
+
+                        <option value="General">General</option>
+                        <option value="Hardware">Hardware</option>
+                        <option value="Software">Software</option>
+                        <option value="Network">Network</option>
+                        <option value="Security">Security</option>
+                        <option value="Email">Email</option>
+                        <option value="Access">Access / Account</option>
+                        <option value="Printer">Printer</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="Priority">
+                        Priority
+                    </label>
+
+                    <select asp-for="Priority"
+                            class="nexus-input">
+
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="Status">
+                        Status
+                    </label>
+
+                    <select asp-for="Status"
+                            class="nexus-input">
+
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Waiting">Waiting</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="AssignedTo">
+                        Assigned Technician
+                    </label>
+
+                    <input asp-for="AssignedTo"
+                           class="nexus-input" />
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="EmployeeId">
+                        Employee
+                    </label>
+
+                    <select asp-for="EmployeeId"
+                            class="nexus-input">
+
+                        <option value="">
+                            No employee
+                        </option>
+
+                        @foreach (var employee in ViewBag.Employees)
+                        {
+                            <option value="@employee.Id">
+                                @employee.FirstName @employee.LastName
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="AssetId">
+                        Related Asset
+                    </label>
+
+                    <select asp-for="AssetId"
+                            class="nexus-input">
+
+                        <option value="">
+                            No asset
+                        </option>
+
+                        @foreach (var asset in ViewBag.Assets)
+                        {
+                            <option value="@asset.Id">
+                                @asset.AssetTag -
+                                @asset.Brand @asset.Model
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group form-group-full">
+
+                    <label asp-for="Description">
+                        Description
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="nexus-input ticket-description"></textarea>
+
+                    <span asp-validation-for="Description"
+                          class="field-validation">
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a asp-action="Index"
+                   class="nexus-secondary-button">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="nexus-primary-button">
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

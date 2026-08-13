@@ -1,0 +1,373 @@
+﻿@model NexusIT.Models.MaintenanceRecord
+
+@{
+    ViewData["Title"] = "Maintenance Details";
+}
+
+<div class="maintenance-details-page">
+
+    <!-- HEADER -->
+
+    <div class="maintenance-details-header">
+
+        <div>
+
+            <a asp-action="Index"
+               class="maintenance-back-link">
+
+                ← Back to Maintenance
+
+            </a>
+
+            <span class="page-eyebrow">
+                NEXUS IT / MAINTENANCE / RECORD
+            </span>
+
+            <h1>
+                Maintenance Details
+            </h1>
+
+            <p>
+                Review maintenance information and asset service history.
+            </p>
+
+        </div>
+
+
+        <div class="maintenance-detail-actions">
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="nexus-secondary-button">
+
+                ✎ Edit Maintenance
+
+            </a>
+
+            @if (Model.Status != "Completed")
+            {
+                <a asp-action="Complete"
+                   asp-route-id="@Model.Id"
+                   class="nexus-primary-button">
+
+                    ✓ Mark Complete
+
+                </a>
+            }
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTENT -->
+
+    <div class="maintenance-details-grid">
+
+        <!-- MAINTENANCE RECORD -->
+
+        <div class="maintenance-detail-panel">
+
+            <div class="detail-panel-header">
+
+                <div>
+
+                    <span class="panel-eyebrow">
+                        MAINTENANCE RECORD
+                    </span>
+
+                    <h2>
+                        @Model.MaintenanceType
+                    </h2>
+
+                </div>
+
+                @if (Model.Status == "Completed")
+                {
+                    <span class="maintenance-status status-completed">
+                        Completed
+                    </span>
+                }
+                else if (Model.Status == "In Progress")
+                {
+                    <span class="maintenance-status status-progress">
+                        In Progress
+                    </span>
+                }
+                else
+                {
+                    <span class="maintenance-status status-scheduled">
+                        Scheduled
+                    </span>
+                }
+
+            </div>
+
+
+            <div class="detail-information-grid">
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        ASSET
+                    </span>
+
+                    @if (Model.Asset != null)
+                    {
+                        <strong>
+                            @Model.Asset.AssetTag
+                        </strong>
+
+                        <span>
+                            @Model.Asset.Brand @Model.Asset.Model
+                        </span>
+                    }
+                    else
+                    {
+                        <strong class="muted-text">
+                            No asset assigned
+                        </strong>
+                    }
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        MAINTENANCE TYPE
+                    </span>
+
+                    <strong>
+                        @Model.MaintenanceType
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        SCHEDULED DATE
+                    </span>
+
+                    <strong>
+                        @Model.ScheduledDate.ToString("dd MMM yyyy")
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        COMPLETED DATE
+                    </span>
+
+                    @if (Model.CompletedDate.HasValue)
+                    {
+                        <strong>
+                            @Model.CompletedDate.Value.ToString("dd MMM yyyy")
+                        </strong>
+                    }
+                    else
+                    {
+                        <strong class="muted-text">
+                            Not completed
+                        </strong>
+                    }
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        TECHNICIAN
+                    </span>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Technician))
+                    {
+                        <strong>
+                            @Model.Technician
+                        </strong>
+                    }
+                    else
+                    {
+                        <strong class="muted-text">
+                            Unassigned
+                        </strong>
+                    }
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        COST
+                    </span>
+
+                    @if (Model.Cost.HasValue)
+                    {
+                        <strong class="detail-cost">
+                            @Model.Cost.Value.ToString("C2")
+                        </strong>
+                    }
+                    else
+                    {
+                        <strong class="muted-text">
+                            No cost recorded
+                        </strong>
+                    }
+
+                </div>
+
+            </div>
+
+
+            <!-- NOTES -->
+
+            <div class="detail-notes">
+
+                <span class="detail-label">
+                    NOTES
+                </span>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                {
+                    <p>
+                        @Model.Notes
+                    </p>
+                }
+                else
+                {
+                    <p class="muted-text">
+                        No maintenance notes were recorded.
+                    </p>
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- ASSET -->
+
+        <div class="maintenance-detail-panel">
+
+            <div class="detail-panel-header">
+
+                <div>
+
+                    <span class="panel-eyebrow">
+                        ASSET INFORMATION
+                    </span>
+
+                    <h2>
+                        Equipment
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            @if (Model.Asset != null)
+            {
+                <div class="asset-detail-card">
+
+                    <div class="asset-detail-icon">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <span class="detail-label">
+                            ASSET TAG
+                        </span>
+
+                        <strong>
+                            @Model.Asset.AssetTag
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="asset-information-list">
+
+                    <div>
+                        <span>Asset Type</span>
+                        <strong>@Model.Asset.AssetType</strong>
+                    </div>
+
+                    <div>
+                        <span>Brand</span>
+                        <strong>@Model.Asset.Brand</strong>
+                    </div>
+
+                    <div>
+                        <span>Model</span>
+                        <strong>@Model.Asset.Model</strong>
+                    </div>
+
+                    <div>
+                        <span>Serial Number</span>
+                        <strong>@Model.Asset.SerialNumber</strong>
+                    </div>
+
+                    <div>
+                        <span>Asset Status</span>
+                        <strong>@Model.Asset.Status</strong>
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <div class="maintenance-empty">
+
+                    <div class="maintenance-empty-icon">
+                        ▣
+                    </div>
+
+                    <h3>
+                        No Asset
+                    </h3>
+
+                    <p>
+                        This maintenance record isn't linked to an asset.
+                    </p>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+
+    <!-- BOTTOM ACTIONS -->
+
+    <div class="maintenance-bottom-actions">
+
+        <a asp-action="Index"
+           class="nexus-secondary-button">
+
+            ← Back to Maintenance
+
+        </a>
+
+        <a asp-action="Delete"
+           asp-route-id="@Model.Id"
+           class="nexus-danger-button">
+
+            ⌫ Delete Record
+
+        </a>
+
+    </div>
+
+</div>

@@ -1,0 +1,24 @@
+NexusIT Final Portfolio Build
+Generated: 2026-08-13
+Target: ASP.NET Core 8 MVC + EF Core + SQL Server LocalDB
+
+Core modules:
+- Authentication & Identity
+- Role-based access
+- Dashboard
+- Support tickets + SLA
+- Ticket comments + timeline
+- Assets + lifecycle history
+- Maintenance
+- Employees
+- Reports / analytics
+- Activity logs
+- Settings
+- Responsive dark UI
+
+Startup behavior:
+- Applies EF Core migrations automatically
+- Ensures roles exist
+- Creates demo accounts if missing
+- Seeds demo application data only when the core tables are empty
+- Exposes GET /health

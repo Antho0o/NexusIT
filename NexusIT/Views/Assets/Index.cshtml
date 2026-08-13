@@ -1,0 +1,286 @@
+﻿@model IEnumerable<NexusIT.Models.Asset>
+
+@{
+    ViewData["Title"] = "Assets";
+}
+
+<div class="assets-page">
+
+    <div class="assets-header">
+
+        <div>
+            <span class="page-eyebrow">
+                NEXUS IT / ASSETS
+            </span>
+
+            <h1>IT Assets</h1>
+
+            <p>
+                Manage company hardware, equipment and assignments.
+            </p>
+        </div>
+
+        <a asp-action="Create" class="nexus-primary-button">
+            <span>+</span>
+            Add Asset
+        </a>
+
+    </div>
+
+
+    <div class="asset-summary">
+
+        <div class="asset-summary-card">
+            <span class="asset-summary-label">TOTAL ASSETS</span>
+
+            <strong>
+                @Model.Count()
+            </strong>
+
+            <span>Registered equipment</span>
+        </div>
+
+        <div class="asset-summary-card">
+            <span class="asset-summary-label">ASSIGNED</span>
+
+            <strong>
+                @Model.Count(a => a.Status == "Assigned")
+            </strong>
+
+            <span>Currently assigned</span>
+        </div>
+
+        <div class="asset-summary-card">
+            <span class="asset-summary-label">AVAILABLE</span>
+
+            <strong>
+                @Model.Count(a => a.Status == "Available")
+            </strong>
+
+            <span>Ready for assignment</span>
+        </div>
+
+        <div class="asset-summary-card">
+            <span class="asset-summary-label">MAINTENANCE</span>
+
+            <strong>
+                @Model.Count(a => a.Status == "Maintenance")
+            </strong>
+
+            <span>Requires attention</span>
+        </div>
+
+        <div class="asset-summary-card">
+            <span class="asset-summary-label">RETIRED</span>
+            <strong>@Model.Count(a => a.Status == "Retired")</strong>
+            <span>Out of active service</span>
+        </div>
+
+        <div class="asset-summary-card">
+            <span class="asset-summary-label">WARRANTY</span>
+            <strong>@Model.Count(a => a.WarrantyExpiry.HasValue && a.WarrantyExpiry.Value.Date >= DateTime.Today && a.WarrantyExpiry.Value.Date <= DateTime.Today.AddDays(90))</strong>
+            <span>Expiring within 90 days</span>
+        </div>
+
+    </div>
+
+
+    <div class="assets-panel">
+
+        <div class="assets-panel-header">
+
+            <div>
+                <span class="panel-eyebrow">
+                    INVENTORY
+                </span>
+
+                <h2>Asset Directory</h2>
+            </div>
+
+            <span class="asset-count">
+                @Model.Count() assets
+            </span>
+
+        </div>
+
+
+        @if (Model.Any())
+        {
+            <div class="asset-table-wrapper">
+
+                <table class="asset-table">
+
+                    <thead>
+                        <tr>
+                            <th>Asset</th>
+                            <th>Type</th>
+                            <th>Brand / Model</th>
+                            <th>Status</th>
+                            <th>Assigned To</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var asset in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    <div class="asset-name">
+
+                                        <div class="asset-icon">
+                                            ▣
+                                        </div>
+
+                                        <div>
+                                            <strong>
+                                                @asset.AssetTag
+                                            </strong>
+
+                                            <span>
+                                                @asset.SerialNumber
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="asset-type">
+                                        @asset.AssetType
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="asset-model">
+
+                                        <strong>
+                                            @asset.Brand
+                                        </strong>
+
+                                        <span>
+                                            @asset.Model
+                                        </span>
+
+                                    </div>
+                                </td>
+
+                                <td>
+
+                                    @if (asset.Status == "Assigned")
+                                    {
+                                        <span class="asset-status status-assigned">
+                                            Assigned
+                                        </span>
+                                    }
+                                    else if (asset.Status == "Maintenance")
+                                    {
+                                        <span class="asset-status status-maintenance">
+                                            Maintenance
+                                        </span>
+                                    }
+                                    else if (asset.Status == "Retired")
+                                    {
+                                        <span class="asset-status status-retired">
+                                            Retired
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="asset-status status-available">
+                                            @asset.Status
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    @if (asset.Employee != null)
+                                    {
+                                        <div class="assigned-employee">
+
+                                            <div class="employee-avatar">
+                                                @asset.Employee.FirstName.Substring(0, 1).ToUpper()
+                                            </div>
+
+                                            <span>
+                                                @asset.Employee.FirstName
+                                                @asset.Employee.LastName
+                                            </span>
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="unassigned">
+                                            Unassigned
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    <div class="asset-actions">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@asset.Id"
+                                           class="asset-action">
+                                            View
+                                        </a>
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@asset.Id"
+                                           class="asset-action">
+                                            Edit
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@asset.Id"
+                                           class="asset-action asset-delete">
+                                            Delete
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="assets-empty">
+
+                <div class="assets-empty-icon">
+                    ▣
+                </div>
+
+                <h3>
+                    No assets registered
+                </h3>
+
+                <p>
+                    Start building your IT inventory by adding your first asset.
+                </p>
+
+                <a asp-action="Create" class="nexus-primary-button">
+                    <span>+</span>
+                    Add Your First Asset
+                </a>
+
+            </div>
+        }
+
+    </div>
+
+</div>

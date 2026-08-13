@@ -1,0 +1,860 @@
+@model NexusIT.Models.SupportTicket
+@using NexusIT.Data
+
+@{
+    ViewData["Title"] = "Ticket Details";
+
+    var responseSlaStatus = ViewBag.ResponseSlaStatus as string ?? "Not Set";
+    var resolutionSlaStatus = ViewBag.ResolutionSlaStatus as string ?? "Not Set";
+
+    var responseTimeRemaining = ViewBag.ResponseTimeRemaining as string ?? "Not set";
+    var resolutionTimeRemaining = ViewBag.ResolutionTimeRemaining as string ?? "Not set";
+
+    var responseDue = Model.ResponseDueAt;
+    var resolutionDue = Model.ResolutionDueAt;
+
+    var isStaff = User.IsInRole(AuthorizationRoles.Administrator) || User.IsInRole(AuthorizationRoles.ITManager) || User.IsInRole(AuthorizationRoles.ITTechnician);
+
+    var firstLetter =
+        Model.Employee != null &&
+        !string.IsNullOrWhiteSpace(Model.Employee.FirstName)
+            ? Model.Employee.FirstName.Substring(0, 1).ToUpper()
+            : "?";
+}
+
+<div class="ticket-details-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="ticket-details-header">
+
+        <div class="ticket-header-left">
+
+            <a asp-action="Index" class="back-link">
+                ← Back to Tickets
+            </a>
+
+            <span class="page-eyebrow">
+                NEXUS IT / SUPPORT / TICKET
+            </span>
+
+            <div class="ticket-title-row">
+
+                <div>
+                    <h1>
+                        #@Model.Id.ToString("D4")
+                    </h1>
+
+                    <p class="ticket-title">
+                        @Model.Title
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             ACTIONS
+        ================================================== -->
+
+        <div class="details-actions">
+
+            @if (isStaff)
+            {
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="nexus-primary-button">
+                Edit Ticket
+            </a>
+
+            @if (Model.Status == "Open")
+            {
+                <form asp-action="ChangeStatus" method="post" class="ticket-action-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="In Progress" />
+                    <button type="submit" class="nexus-secondary-button">
+                        Start Work
+                    </button>
+                </form>
+            }
+
+            @if (Model.Status == "In Progress")
+            {
+                <form asp-action="ChangeStatus" method="post" class="ticket-action-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="Waiting" />
+                    <button type="submit" class="nexus-secondary-button">
+                        Put On Hold
+                    </button>
+                </form>
+
+                <button type="button" class="nexus-primary-button" data-bs-toggle="modal" data-bs-target="#resolveTicketModal">
+                    Resolve Ticket
+                </button>
+            }
+
+            @if (Model.Status == "Waiting")
+            {
+                <form asp-action="ChangeStatus" method="post" class="ticket-action-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="newStatus" value="In Progress" />
+                    <button type="submit" class="nexus-primary-button">
+                        Resume Work
+                    </button>
+                </form>
+
+                <button type="button" class="nexus-secondary-button" data-bs-toggle="modal" data-bs-target="#resolveTicketModal">
+                    Resolve Ticket
+                </button>
+            }
+
+            @if (Model.Status == "Resolved")
+            {
+                <form asp-action="Close" asp-route-id="@Model.Id" method="post" class="ticket-action-form">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="nexus-primary-button">
+                        Close Ticket
+                    </button>
+                </form>
+            }
+
+            @if (Model.Status == "Closed" || Model.Status == "Resolved")
+            {
+                <form asp-action="Reopen" asp-route-id="@Model.Id" method="post" class="ticket-action-form">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="nexus-secondary-button">
+                        Reopen Ticket
+                    </button>
+                </form>
+            }
+            }
+
+        </div>
+
+    </div>
+
+    @if (TempData["TicketError"] != null)
+    {
+        <div class="ticket-workflow-alert ticket-workflow-alert-error">
+            <span class="ticket-workflow-alert-icon">!</span>
+            <div>
+                <strong>Workflow action unavailable</strong>
+                <span>@TempData["TicketError"]</span>
+            </div>
+        </div>
+    }
+
+    <!-- WORKFLOW -->
+    <div class="ticket-workflow-card">
+        <div class="workflow-header">
+            <div>
+                <span class="panel-eyebrow">SERVICE WORKFLOW</span>
+                <h2>Ticket Lifecycle</h2>
+            </div>
+            <span class="workflow-current">Current: @Model.Status</span>
+        </div>
+
+        <div class="ticket-workflow-steps">
+            @{
+                var workflow = new[] { "Open", "In Progress", "Waiting", "Resolved", "Closed" };
+                var currentIndex = Array.IndexOf(workflow, Model.Status);
+            }
+
+            @for (var i = 0; i < workflow.Length; i++)
+            {
+                var step = workflow[i];
+                var stepClass = i < currentIndex ? "workflow-step completed" : i == currentIndex ? "workflow-step current" : "workflow-step";
+                <div class="@stepClass">
+                    <span class="workflow-step-number">@(i < currentIndex ? "✓" : (i + 1).ToString())</span>
+                    <span class="workflow-step-label">@step</span>
+                </div>
+                @if (i < workflow.Length - 1)
+                {
+                    <span class="workflow-connector @(i < currentIndex ? "completed" : "")"></span>
+                }
+            }
+        </div>
+    </div>
+
+    @if (isStaff)
+    {
+    <!-- RESOLUTION MODAL -->
+    <div class="modal fade" id="resolveTicketModal" tabindex="-1" aria-labelledby="resolveTicketModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content nexus-modal">
+                <div class="modal-header">
+                    <div>
+                        <span class="panel-eyebrow">RESOLUTION</span>
+                        <h2 id="resolveTicketModalLabel">Resolve Ticket #@Model.Id.ToString("D4")</h2>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="Resolve" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="modal-body">
+                        <p class="workflow-modal-copy">Record what was done to resolve the issue. This will be stored in the ticket history.</p>
+                        <label for="resolutionNote" class="form-label">Resolution summary</label>
+                        <textarea id="resolutionNote" name="resolutionNote" class="nexus-input resolution-note" rows="5" placeholder="e.g. Reset the user's VPN profile and confirmed connectivity..." required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="nexus-secondary-button" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="nexus-primary-button">Mark Resolved</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    }
+
+
+    <!-- =====================================================
+         MAIN GRID
+    ====================================================== -->
+
+    <div class="ticket-details-grid">
+
+
+        <!-- =================================================
+             ISSUE
+        ================================================== -->
+
+        <div class="ticket-details-card ticket-main-card">
+
+            <div class="details-card-header">
+
+                <span class="panel-eyebrow">
+                    ISSUE
+                </span>
+
+                <h2>
+                    @Model.Title
+                </h2>
+
+            </div>
+
+            <div class="ticket-description-view">
+                @Model.Description
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             STATUS
+        ================================================== -->
+
+        <div class="ticket-details-card">
+
+            <div class="details-card-header">
+
+                <span class="panel-eyebrow">
+                    STATUS
+                </span>
+
+                <h2>
+                    Ticket State
+                </h2>
+
+            </div>
+
+
+            <div class="ticket-state">
+
+                @if (Model.Status == "Closed")
+                {
+                    <span class="ticket-status status-closed">
+                        Closed
+                    </span>
+                }
+                else if (Model.Status == "Resolved")
+                {
+                    <span class="ticket-status status-resolved">
+                        Resolved
+                    </span>
+                }
+                else if (Model.Status == "In Progress")
+                {
+                    <span class="ticket-status status-progress">
+                        In Progress
+                    </span>
+                }
+                else if (Model.Status == "Waiting")
+                {
+                    <span class="ticket-status status-waiting">
+                        Waiting
+                    </span>
+                }
+                else
+                {
+                    <span class="ticket-status status-open">
+                        @Model.Status
+                    </span>
+                }
+
+            </div>
+
+
+            <div class="ticket-detail-row">
+
+                <span>
+                    Priority
+                </span>
+
+                <strong>
+                    @Model.Priority
+                </strong>
+
+            </div>
+
+
+            <div class="ticket-detail-row">
+
+                <span>
+                    Category
+                </span>
+
+                <strong>
+                    @Model.Category
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             REQUESTER
+        ================================================== -->
+
+        <div class="ticket-details-card">
+
+            <div class="details-card-header">
+
+                <span class="panel-eyebrow">
+                    REQUESTER
+                </span>
+
+                <h2>
+                    Employee
+                </h2>
+
+            </div>
+
+
+            @if (Model.Employee != null)
+            {
+                <div class="ticket-person">
+
+                    <div class="large-employee-avatar">
+                        @firstLetter
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            @Model.Employee.FirstName
+                            @Model.Employee.LastName
+                        </strong>
+
+                        <span>
+                            Employee #@Model.Employee.Id
+                        </span>
+
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <div class="ticket-no-data">
+                    No employee assigned.
+                </div>
+            }
+
+        </div>
+
+
+        <!-- =================================================
+             ASSET
+        ================================================== -->
+
+        <div class="ticket-details-card">
+
+            <div class="details-card-header">
+
+                <span class="panel-eyebrow">
+                    EQUIPMENT
+                </span>
+
+                <h2>
+                    Related Asset
+                </h2>
+
+            </div>
+
+
+            @if (Model.Asset != null)
+            {
+                <div class="ticket-asset">
+
+                    <div class="asset-icon">
+                        ▣
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            @Model.Asset.AssetTag
+                        </strong>
+
+                        <span>
+                            @Model.Asset.Brand
+                            @Model.Asset.Model
+                        </span>
+
+                        <span>
+                            @Model.Asset.AssetType
+                        </span>
+
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <div class="ticket-no-data">
+                    No asset linked to this ticket.
+                </div>
+            }
+
+        </div>
+
+
+        <!-- =================================================
+             ASSIGNMENT
+        ================================================== -->
+
+        <div class="ticket-details-card">
+
+            <div class="details-card-header">
+
+                <span class="panel-eyebrow">
+                    ASSIGNMENT
+                </span>
+
+                <h2>
+                    Technician
+                </h2>
+
+            </div>
+
+
+            <div class="technician-info">
+
+                <span>
+                    ASSIGNED TO
+                </span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.AssignedTo)
+                                        ? "Unassigned"
+                                        : Model.AssignedTo)
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             TIMELINE
+        ================================================== -->
+
+        <div class="ticket-details-card ticket-timeline-card">
+
+            <div class="details-card-header ticket-timeline-header">
+                <div>
+                    <span class="panel-eyebrow">AUDIT TRAIL</span>
+                    <h2>Ticket Timeline</h2>
+                </div>
+                <span class="timeline-count">
+                    @(((IEnumerable<NexusIT.Models.ViewModels.TicketActivityViewModel>)ViewBag.TicketActivities).Count()) events
+                </span>
+            </div>
+
+            <div class="ticket-activity-timeline">
+                @{
+                    var timeline = (IEnumerable<NexusIT.Models.ViewModels.TicketActivityViewModel>)ViewBag.TicketActivities;
+                }
+
+                @if (timeline.Any())
+                {
+                    foreach (var activity in timeline)
+                    {
+                        <article class="ticket-activity-item @activity.CssClass">
+                            <div class="ticket-activity-rail">
+                                <span class="ticket-activity-icon">@activity.Icon</span>
+                            </div>
+
+                            <div class="ticket-activity-content">
+                                <div class="ticket-activity-topline">
+                                    <div>
+                                        <span class="ticket-activity-type">@activity.Type</span>
+                                        <h3>@activity.Title</h3>
+                                    </div>
+                                    <time datetime="@activity.Date.ToString("O")">
+                                        @activity.Date.ToString("dd MMM yyyy, HH:mm")
+                                    </time>
+                                </div>
+
+                                <p>@activity.Description</p>
+
+                                <div class="ticket-activity-author">
+                                    <span class="activity-author-dot"></span>
+                                    @activity.Author
+                                </div>
+                            </div>
+                        </article>
+                    }
+                }
+                else
+                {
+                    <div class="ticket-timeline-empty">
+                        <span>◌</span>
+                        <strong>No activity recorded</strong>
+                        <p>Ticket activity will appear here as the ticket progresses.</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- =================================================
+             RESPONSE SLA
+        ================================================== -->
+
+        <div class="ticket-details-card sla-card">
+
+            <div class="details-card-header">
+
+                <span class="panel-eyebrow">
+                    SLA
+                </span>
+
+                <h2>
+                    Response SLA
+                </h2>
+
+            </div>
+
+
+            <div class="sla-status-row">
+
+                <span>
+                    Status
+                </span>
+
+                <strong class="sla-status-text @responseSlaStatus
+                    .Replace(" ", " -")
+                        .ToLower()">
+
+                    @responseSlaStatus
+
+                </strong>
+
+            </div>
+
+
+            <div class="sla-detail">
+
+                <span>
+                    Time
+                </span>
+
+                <strong class="sla-live-countdown" data-due="@(responseDue?.ToString("O"))" data-completed="@(Model.FirstResponseAt?.ToString("O"))">
+                    @responseTimeRemaining
+                </strong>
+
+            </div>
+
+
+            @if (responseDue.HasValue)
+            {
+                <div class="sla-detail">
+
+                    <span>
+                        Due
+                    </span>
+
+                    <strong>
+                        @responseDue.Value.ToString(
+                        "dd MMM yyyy, HH:mm")
+                </strong>
+
+            </div>
+                        }
+
+        </div>
+
+
+        <!-- =================================================
+             RESOLUTION SLA
+        ================================================== -->
+
+        <div class="ticket-details-card sla-card">
+
+            <div class="details-card-header">
+
+                <span class="panel-eyebrow">
+                    SLA
+                </span>
+
+                <h2>
+                    Resolution SLA
+                </h2>
+
+            </div>
+
+
+            <div class="sla-status-row">
+
+                <span>
+                    Status
+                </span>
+
+                <strong class="sla-status-text @resolutionSlaStatus
+                    .Replace(" ", " -")
+                        .ToLower()">
+
+                    @resolutionSlaStatus
+
+                </strong>
+
+            </div>
+
+
+            <div class="sla-detail">
+
+                <span>
+                    Time
+                </span>
+
+                <strong class="sla-live-countdown" data-due="@(resolutionDue?.ToString("O"))" data-completed="@(Model.ResolvedAt?.ToString("O"))">
+                    @resolutionTimeRemaining
+                </strong>
+
+            </div>
+
+
+            @if (resolutionDue.HasValue)
+            {
+                <div class="sla-detail">
+
+                    <span>
+                        Due
+                    </span>
+
+                    <strong>
+                        @resolutionDue.Value.ToString(
+                        "dd MMM yyyy, HH:mm")
+                </strong>
+
+            </div>
+                        }
+
+        </div>
+
+
+        <!-- =================================================
+             COMMENTS
+        ================================================== -->
+
+        <div class="ticket-details-card ticket-comments-card">
+
+            <div class="details-card-header">
+
+                <span class="panel-eyebrow">
+                    COMMUNICATION
+                </span>
+
+                <h2>
+                    Ticket Comments
+                </h2>
+
+            </div>
+
+
+            <!-- ADD COMMENT -->
+
+            <form asp-action="AddComment"
+                  method="post"
+                  class="ticket-comment-form">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="id"
+                       value="@Model.Id" />
+
+
+                <textarea name="comment"
+                          rows="4"
+                          class="ticket-comment-input"
+                          placeholder="Add a comment or update..."
+                          required></textarea>
+
+
+                <div class="comment-form-footer">
+
+                    @if (isStaff)
+                    {
+                    <label class="internal-note-toggle">
+
+                        <input type="checkbox"
+                               name="isInternal"
+                               value="true" />
+
+                        <span>
+                            Internal note
+                        </span>
+
+                    </label>
+                    }
+
+
+                    <button type="submit"
+                            class="nexus-primary-button">
+
+                        Add Comment
+
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- COMMENTS LIST -->
+
+            <div class="ticket-comments-list">
+
+                @if (Model.Comments != null &&
+                                Model.Comments.Any())
+                {
+                    foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedDate))
+                    {
+                        <div class="ticket-comment">
+
+                            <div class="comment-avatar">
+                                @(
+                                                        string.IsNullOrWhiteSpace(comment.Author)
+                                                        ? "?"
+                                                        : comment.Author.Substring(0, 1).ToUpper()
+                                                        )
+                    </div>
+
+
+                            <div class="comment-body">
+
+                                <div class="comment-header">
+
+                                    <strong>
+                                        @comment.Author
+                                    </strong>
+
+                                    <span>
+                                        @comment.CreatedDate.ToString(
+                                                                "dd MMM yyyy, HH:mm")
+                            </span>
+
+                        </div>
+
+
+                        @if (comment.IsInternal)
+                                {
+                                    <span class="internal-comment-label">
+                                        INTERNAL
+                                    </span>
+                                }
+
+
+                                <p>
+                                    @comment.Comment
+                                </p>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="ticket-no-comments">
+
+                        <div class="no-comments-icon">
+                            ◌
+                        </div>
+
+                        <strong>
+                            No comments yet
+                        </strong>
+
+                        <span>
+                            No comments have been added to this ticket yet.
+                        </span>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+(function () {
+    function formatRemaining(ms) {
+        const totalMinutes = Math.max(0, Math.floor(ms / 60000));
+        const days = Math.floor(totalMinutes / 1440);
+        const hours = Math.floor((totalMinutes % 1440) / 60);
+        const minutes = totalMinutes % 60;
+        if (days > 0) return `${days}d ${hours}h remaining`;
+        if (hours > 0) return `${hours}h ${minutes}m remaining`;
+        return `${minutes}m remaining`;
+    }
+
+    function updateSlaCountdowns() {
+        document.querySelectorAll('.sla-live-countdown').forEach(el => {
+            const due = el.dataset.due;
+            const completed = el.dataset.completed;
+            if (!due || completed) return;
+
+            const dueTime = new Date(due).getTime();
+            const remaining = dueTime - Date.now();
+
+            if (remaining <= 0) {
+                el.textContent = 'Breached · due time passed';
+                el.classList.add('sla-countdown-breached');
+            } else {
+                el.textContent = formatRemaining(remaining);
+                el.classList.remove('sla-countdown-breached');
+            }
+        });
+    }
+
+    updateSlaCountdowns();
+    setInterval(updateSlaCountdowns, 30000);
+})();
+</script>

@@ -1,0 +1,78 @@
+@model IEnumerable<NexusIT.Controllers.UserRoleViewModel>
+@using NexusIT.Data
+@{
+    ViewData["Title"] = "User Management";
+    var roles = ViewBag.Roles as IEnumerable<string> ?? Array.Empty<string>();
+}
+
+<div class="admin-page">
+    <div class="page-header nexus-page-header">
+        <div>
+            <span class="page-eyebrow">NEXUS IT / ADMINISTRATION</span>
+            <h1>User Management</h1>
+            <p>Control application access and assign NexusIT roles.</p>
+        </div>
+    </div>
+
+    @if (TempData["AdminSuccess"] != null)
+    {
+        <div class="nexus-alert nexus-alert-success">@TempData["AdminSuccess"]</div>
+    }
+    @if (TempData["AdminError"] != null)
+    {
+        <div class="nexus-alert nexus-alert-danger">@TempData["AdminError"]</div>
+    }
+
+    <div class="nexus-panel">
+        <div class="nexus-panel-header">
+            <div>
+                <span class="panel-eyebrow">ACCESS CONTROL</span>
+                <h2>Registered users</h2>
+            </div>
+            <span class="admin-user-count">@Model.Count() users</span>
+        </div>
+
+        <div class="admin-role-grid">
+            <div><strong>Administrator</strong><span>Full system access</span></div>
+            <div><strong>IT Manager</strong><span>Operations, reports and management</span></div>
+            <div><strong>IT Technician</strong><span>Tickets, assets and maintenance</span></div>
+            <div><strong>Employee</strong><span>Own support requests</span></div>
+        </div>
+
+        <div class="table-responsive admin-users-table-wrap">
+            <table class="table nexus-table admin-users-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Verification</th>
+                        <th>Current role</th>
+                        <th class="text-end">Change role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td><strong>@user.Email</strong><small class="d-block text-muted">@user.UserId</small></td>
+                        <td>@(user.EmailConfirmed ? "Confirmed" : "Not confirmed")</td>
+                        <td><span class="admin-role-badge">@user.Role</span></td>
+                        <td>
+                            <form asp-action="UpdateRole" method="post" class="admin-role-form justify-content-end">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <select name="role" class="form-select admin-role-select">
+                                    @foreach (var role in roles)
+                                    {
+                                        <option value="@role" selected="@(role == user.Role ? "selected" : null)">@role</option>
+                                    }
+                                </select>
+                                <button type="submit" class="nexus-primary-button">Save</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

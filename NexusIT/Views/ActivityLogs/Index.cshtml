@@ -1,0 +1,356 @@
+﻿@model IEnumerable<NexusIT.Models.ActivityLog>
+
+@{
+    ViewData["Title"] = "Activity Log";
+
+    var totalActivities = ViewBag.TotalActivities ?? Model.Count();
+
+    var todayActivities = ViewBag.TodayActivities ??
+        Model.Count(x => x.CreatedDate.Date == DateTime.Now.Date);
+
+    var totalEntityTypes = ViewBag.TotalEntityTypes ??
+        Model
+            .Where(x => !string.IsNullOrWhiteSpace(x.EntityType))
+            .Select(x => x.EntityType)
+            .Distinct()
+            .Count();
+}
+
+<div class="activity-page">
+
+    <!-- HEADER -->
+
+    <div class="activity-header">
+
+        <div>
+
+            <span class="page-eyebrow">
+                NEXUS IT / AUDIT
+            </span>
+
+            <h1>
+                Activity Log
+            </h1>
+
+            <p>
+                Track system activity and changes across NexusIT.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="activity-summary">
+
+        <!-- TOTAL ACTIVITIES -->
+
+        <div class="activity-summary-card">
+
+            <div class="activity-summary-icon">
+                ◌
+            </div>
+
+            <div>
+
+                <span>
+                    TOTAL ACTIVITIES
+                </span>
+
+                <strong>
+                    @totalActivities
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- TODAY -->
+
+        <div class="activity-summary-card">
+
+            <div class="activity-summary-icon">
+                ◷
+            </div>
+
+            <div>
+
+                <span>
+                    TODAY
+                </span>
+
+                <strong>
+                    @todayActivities
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- ENTITY TYPES -->
+
+        <div class="activity-summary-card">
+
+            <div class="activity-summary-icon">
+                ◇
+            </div>
+
+            <div>
+
+                <span>
+                    ENTITY TYPES
+                </span>
+
+                <strong>
+                    @totalEntityTypes
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIVITY PANEL -->
+
+    <div class="activity-panel">
+
+        <div class="activity-panel-header">
+
+            <div>
+
+                <span class="panel-eyebrow">
+                    SYSTEM AUDIT TRAIL
+                </span>
+
+                <h2>
+                    Recent Activity
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- FILTERS -->
+
+        <form asp-action="Index"
+              method="get"
+              class="activity-filters">
+
+            <!-- SEARCH -->
+
+            <div class="activity-search">
+
+                <span>
+                    ⌕
+                </span>
+
+                <input type="text"
+                       name="search"
+                       value="@ViewBag.Search"
+                       placeholder="Search activity..." />
+
+            </div>
+
+
+            <!-- ACTION FILTER -->
+
+            <select name="actionType"
+                    class="activity-filter">
+
+                <option value="">
+                    All actions
+                </option>
+
+                @foreach (var action in ViewBag.ActionTypes)
+                {
+                    if (ViewBag.ActionType == action)
+                    {
+                        <option value="@action" selected>
+                            @action
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="@action">
+                            @action
+                        </option>
+                    }
+                }
+
+            </select>
+
+
+            <!-- ENTITY FILTER -->
+
+            <select name="entityType"
+                    class="activity-filter">
+
+                <option value="">
+                    All entities
+                </option>
+
+                @foreach (var entity in ViewBag.EntityTypes)
+                {
+                    if (ViewBag.EntityType == entity)
+                    {
+                        <option value="@entity" selected>
+                            @entity
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="@entity">
+                            @entity
+                        </option>
+                    }
+                }
+
+            </select>
+
+
+            <!-- FILTER BUTTON -->
+
+            <button type="submit"
+                    class="activity-filter-button">
+
+                Filter
+
+            </button>
+
+
+            <!-- CLEAR BUTTON -->
+
+            <a asp-action="Index"
+               class="activity-clear-button">
+
+                Clear
+
+            </a>
+
+        </form>
+
+
+        <!-- LOGS -->
+        @if (!Model.Any())
+        {
+            <div class="activity-empty">
+
+                <div class="activity-empty-icon">
+                    ◌
+                </div>
+
+                <h3>
+                    No activity recorded
+                </h3>
+
+                <p>
+                    System activity will appear here as actions
+                    are performed in NexusIT.
+                </p>
+
+            </div>
+        }
+        else
+        {
+            <div class="activity-list">
+
+                @foreach (var log in Model)
+                {
+                    <a asp-action="Details"
+                       asp-route-id="@log.Id"
+                       class="activity-item">
+
+                        <!-- TIMELINE -->
+
+                        <div class="activity-timeline">
+
+                            <span class="activity-dot"></span>
+
+                        </div>
+
+
+                        <!-- MAIN CONTENT -->
+
+                        <div class="activity-main">
+
+                            <div class="activity-item-top">
+
+                                <div class="activity-action">
+
+                                    <strong>
+                                        @log.Action
+                                    </strong>
+
+                                    @if (!string.IsNullOrWhiteSpace(log.EntityType))
+                                    {
+                                        <span class="activity-entity">
+                                            @log.EntityType
+                                        </span>
+                                    }
+
+                                </div>
+
+                                <time>
+                                    @log.CreatedDate.ToString("dd MMM yyyy, HH:mm")
+                                </time>
+
+                            </div>
+
+
+                            <p>
+                                @log.Description
+                            </p>
+
+
+                            <!-- META -->
+
+                            <div class="activity-meta">
+
+                                @if (!string.IsNullOrWhiteSpace(log.PerformedBy))
+                                {
+                                    <span>
+                                        ◉ @log.PerformedBy
+                                    </span>
+                                }
+
+                                @if (log.EntityId.HasValue)
+                                {
+                                    <span>
+                                        #@log.EntityId
+                                    </span>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(log.IpAddress))
+                                {
+                                    <span>
+                                        IP @log.IpAddress
+                                    </span>
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ARROW -->
+
+                        <div class="activity-arrow">
+                            →
+                        </div>
+
+                    </a>
+                }
+
+            </div>
+        }
+
+    </div>
+
+</div>

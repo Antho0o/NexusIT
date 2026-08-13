@@ -1,0 +1,85 @@
+﻿@model NexusIT.Models.Employee
+
+@{
+    ViewData["Title"] = "Delete Employee";
+}
+
+<div class="nexus-page">
+
+    <div class="page-header">
+
+        <div>
+            <span class="page-eyebrow">NEXUS IT / PEOPLE</span>
+            <h1>Delete Employee</h1>
+            <p>Remove an employee from the directory.</p>
+        </div>
+
+        <a asp-action="Index"
+           class="nexus-btn nexus-btn-secondary">
+            ← Back to Employees
+        </a>
+
+    </div>
+
+    <div class="delete-card">
+
+        <div class="delete-icon">
+            !
+        </div>
+
+        <span class="page-eyebrow">CONFIRM ACTION</span>
+
+        <h2>
+            Delete @Model.FirstName @Model.LastName?
+        </h2>
+
+        <p>
+            This action will permanently remove this employee
+            from the NexusIT employee directory.
+        </p>
+
+        <div class="delete-profile">
+
+            <div class="employee-avatar">
+                @Model.FirstName.Substring(0, 1)@Model.LastName.Substring(0, 1)
+            </div>
+
+            <div>
+                <strong>
+                    @Model.FirstName @Model.LastName
+                </strong>
+
+                <span>
+                    @Model.Email
+                </span>
+            </div>
+
+        </div>
+
+        <div class="delete-warning">
+            <strong>Important</strong>
+
+            <span>
+                Once deleted, this employee record cannot be recovered.
+            </span>
+        </div>
+
+        <form asp-action="Delete" class="delete-actions">
+
+            <input type="hidden" asp-for="Id" />
+
+            <a asp-action="Index"
+               class="nexus-btn nexus-btn-secondary">
+                Cancel
+            </a>
+
+            <button type="submit"
+                    class="nexus-btn nexus-btn-danger">
+                Delete Employee
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

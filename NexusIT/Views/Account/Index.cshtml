@@ -1,0 +1,409 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "NexusIT";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>NexusIT</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 50% 20%,
+                    rgba(67, 97, 238, 0.12),
+                    transparent 35%
+                ),
+                #070b14;
+
+            color: #ffffff;
+
+            overflow: hidden;
+        }
+
+        /* =====================================================
+           BACKGROUND
+        ===================================================== */
+
+        .background {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .background::before {
+            content: "";
+
+            position: absolute;
+
+            width: 700px;
+            height: 700px;
+
+            top: -350px;
+            left: -250px;
+
+            border-radius: 50%;
+
+            background: rgba(59, 130, 246, 0.08);
+
+            filter: blur(100px);
+        }
+
+        .background::after {
+            content: "";
+
+            position: absolute;
+
+            width: 600px;
+            height: 600px;
+
+            right: -250px;
+            bottom: -300px;
+
+            border-radius: 50%;
+
+            background: rgba(99, 102, 241, 0.07);
+
+            filter: blur(100px);
+        }
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .auth-container {
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 30px;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 480px;
+
+            background: rgba(13, 18, 31, 0.88);
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            border-radius: 24px;
+
+            padding: 50px 45px;
+
+            text-align: center;
+
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+
+            backdrop-filter: blur(20px);
+
+            animation: cardAppear 0.7s ease forwards;
+        }
+
+        @@keyframes cardAppear {
+
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* =====================================================
+           LOGO
+        ===================================================== */
+
+        .logo {
+            width: 82px;
+            height: 82px;
+
+            margin: 0 auto 25px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+                );
+
+            box-shadow:
+                0 15px 40px rgba(37, 99, 235, 0.25);
+        }
+
+        .logo i {
+            font-size: 38px;
+            color: white;
+        }
+
+        /* =====================================================
+           TEXT
+        ===================================================== */
+
+        .brand {
+            font-size: 34px;
+
+            font-weight: 800;
+
+            letter-spacing: 4px;
+
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #8f9bb3;
+
+            font-size: 15px;
+
+            line-height: 1.6;
+
+            margin-bottom: 35px;
+        }
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .auth-buttons {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 13px;
+        }
+
+        .auth-button {
+            width: 100%;
+
+            height: 54px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 10px;
+
+            text-decoration: none;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .login-button {
+            background: #2563eb;
+
+            color: white;
+
+            box-shadow:
+                0 10px 25px rgba(37, 99, 235, 0.2);
+        }
+
+        .login-button:hover {
+            background: #1d4ed8;
+
+            color: white;
+
+            box-shadow:
+                0 14px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .register-button {
+            background: rgba(255, 255, 255, 0.05);
+
+            border: 1px solid rgba(255, 255, 255, 0.09);
+
+            color: #e8edf7;
+        }
+
+        .register-button:hover {
+            background: rgba(255, 255, 255, 0.08);
+
+            color: white;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer {
+            margin-top: 35px;
+
+            padding-top: 25px;
+
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+            color: #657089;
+
+            font-size: 12px;
+        }
+
+        .footer span {
+            color: #8b96aa;
+        }
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @@media (max-width: 600px) {
+
+            body {
+                overflow: auto;
+            }
+
+            .auth-container {
+                padding: 20px;
+            }
+
+            .auth-card {
+                padding: 40px 25px;
+
+                border-radius: 20px;
+            }
+
+            .brand {
+                font-size: 28px;
+            }
+
+            .logo {
+                width: 72px;
+                height: 72px;
+            }
+
+            .logo i {
+                font-size: 32px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="background"></div>
+
+    <main class="auth-container">
+
+        <section class="auth-card">
+
+            <!-- LOGO -->
+
+            <div class="logo">
+                <i class="bi bi-shield-lock-fill"></i>
+            </div>
+
+            <!-- BRAND -->
+
+            <h1 class="brand">
+                NEXUSIT
+            </h1>
+
+            <p class="subtitle">
+                IT Asset & Infrastructure Management
+            </p>
+
+            <!-- AUTHENTICATION -->
+
+            <div class="auth-buttons">
+
+                <a asp-area="Identity"
+                   asp-page="/Account/Login"
+                   class="auth-button login-button">
+
+                    <i class="bi bi-box-arrow-in-right"></i>
+
+                    Login
+
+                </a>
+
+                <a asp-area="Identity"
+                   asp-page="/Account/Register"
+                   class="auth-button register-button">
+
+                    <i class="bi bi-person-plus"></i>
+
+                    Register
+
+                </a>
+
+            </div>
+
+            <!-- FOOTER -->
+
+            <div class="footer">
+
+                <span>NexusIT</span>
+
+                <br />
+
+                Secure IT Management Platform
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

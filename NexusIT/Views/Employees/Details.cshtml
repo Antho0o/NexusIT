@@ -1,0 +1,399 @@
+﻿@model NexusIT.Models.Employee
+
+@{
+    ViewData["Title"] = "Employee Details";
+
+    var assets = ViewBag.EmployeeAssets
+        as IEnumerable<NexusIT.Models.Asset>;
+
+    var tickets = ViewBag.EmployeeTickets
+        as IEnumerable<NexusIT.Models.SupportTicket>;
+}
+
+<div class="employee-details-page">
+
+    <!-- HEADER -->
+
+    <div class="employee-details-header">
+
+        <div>
+
+            <a asp-action="Index" class="back-link">
+                ← Back to Employees
+            </a>
+
+            <span class="page-eyebrow">
+                NEXUS IT / PEOPLE / EMPLOYEE
+            </span>
+
+            <div class="employee-title-row">
+
+                <div class="employee-avatar-large">
+                    @Model.FirstName.Substring(0, 1)@Model.LastName.Substring(0, 1)
+                </div>
+
+                <div>
+
+                    <h1>
+                        @Model.FirstName @Model.LastName
+                    </h1>
+
+                    <p>
+                        @Model.JobTitle
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="employee-header-actions">
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="nexus-secondary-button">
+
+                Edit Employee
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- EMPLOYEE INFORMATION -->
+
+    <div class="employee-info-grid">
+
+        <div class="employee-info-card">
+
+            <span class="info-label">
+                DEPARTMENT
+            </span>
+
+            <strong>
+                @(string.IsNullOrWhiteSpace(Model.Department)
+                                ? "Not specified"
+                                : Model.Department)
+            </strong>
+
+        </div>
+
+
+        <div class="employee-info-card">
+
+            <span class="info-label">
+                EMAIL
+            </span>
+
+            <strong>
+                @Model.Email
+            </strong>
+
+        </div>
+
+
+        <div class="employee-info-card">
+
+            <span class="info-label">
+                PHONE
+            </span>
+
+            <strong>
+                @(string.IsNullOrWhiteSpace(Model.PhoneNumber)
+                                ? "Not specified"
+                                : Model.PhoneNumber)
+            </strong>
+
+        </div>
+
+
+        <div class="employee-info-card">
+
+            <span class="info-label">
+                LOCATION
+            </span>
+
+            <strong>
+                @(string.IsNullOrWhiteSpace(Model.Location)
+                                ? "Not specified"
+                                : Model.Location)
+            </strong>
+
+        </div>
+
+
+        <div class="employee-info-card">
+
+            <span class="info-label">
+                DATE JOINED
+            </span>
+
+            <strong>
+                @Model.DateJoined.ToString("dd MMM yyyy")
+            </strong>
+
+        </div>
+
+
+        <div class="employee-info-card">
+
+            <span class="info-label">
+                ACCOUNT STATUS
+            </span>
+
+            @if (Model.IsActive)
+            {
+                <span class="employee-active-status">
+                    Active
+                </span>
+            }
+            else
+            {
+                <span class="employee-inactive-status">
+                    Inactive
+                </span>
+            }
+
+        </div>
+
+    </div>
+
+
+    <!-- RELATIONSHIP GRID -->
+
+    <div class="employee-related-grid">
+
+
+        <!-- ASSETS -->
+
+        <section class="employee-related-panel">
+
+            <div class="related-panel-header">
+
+                <div>
+
+                    <span class="panel-eyebrow">
+                        ASSET MANAGEMENT
+                    </span>
+
+                    <h2>Assigned Assets</h2>
+
+                </div>
+
+                <span class="related-count">
+                    @(assets?.Count() ?? 0)
+                </span>
+
+            </div>
+
+
+            @if (assets != null && assets.Any())
+            {
+                <div class="related-list">
+
+                    @foreach (var asset in assets)
+                    {
+                        <a asp-controller="Assets"
+                           asp-action="Details"
+                           asp-route-id="@asset.Id"
+                           class="related-item">
+
+                            <div class="related-item-icon">
+                                ▣
+                            </div>
+
+                            <div class="related-item-info">
+
+                                <strong>
+                                    @asset.AssetTag
+                                </strong>
+
+                                <span>
+                                    @asset.Brand @asset.Model
+                                </span>
+
+                            </div>
+
+                            <div class="related-item-status">
+                                @asset.Status
+                            </div>
+
+                        </a>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="related-empty">
+
+                    <div class="related-empty-icon">
+                        ▣
+                    </div>
+
+                    <strong>
+                        No assigned assets
+                    </strong>
+
+                    <p>
+                        This employee currently has no IT equipment assigned.
+                    </p>
+
+                </div>
+            }
+
+        </section>
+
+
+        <!-- TICKETS -->
+
+        <section class="employee-related-panel">
+
+            <div class="related-panel-header">
+
+                <div>
+
+                    <span class="panel-eyebrow">
+                        SERVICE DESK
+                    </span>
+
+                    <h2>Support Tickets</h2>
+
+                </div>
+
+                <span class="related-count">
+                    @(tickets?.Count() ?? 0)
+                </span>
+
+            </div>
+
+
+            @if (tickets != null && tickets.Any())
+            {
+                <div class="related-list">
+
+                    @foreach (var ticket in tickets)
+                    {
+                        <a asp-controller="SupportTickets"
+                           asp-action="Details"
+                           asp-route-id="@ticket.Id"
+                           class="related-item">
+
+                            <div class="related-ticket-number">
+                                #@ticket.Id.ToString("D4")
+                            </div>
+
+                            <div class="related-item-info">
+
+                                <strong>
+                                    @ticket.Title
+                                </strong>
+
+                                <span>
+                                    @ticket.Category
+                                </span>
+
+                            </div>
+
+                            <div class="related-ticket-status">
+
+                                @if (ticket.Priority == "Critical")
+                                {
+                                    <span class="priority-critical">
+                                        Critical
+                                    </span>
+                                }
+                                else if (ticket.Priority == "High")
+                                {
+                                    <span class="priority-high">
+                                        High
+                                    </span>
+                                }
+                                else if (ticket.Priority == "Low")
+                                {
+                                    <span class="priority-low">
+                                        Low
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="priority-medium">
+                                        Medium
+                                    </span>
+                                }
+
+                                @if (ticket.Status == "Closed")
+                                {
+                                    <span class="status-closed">
+                                        Closed
+                                    </span>
+                                }
+                                else if (ticket.Status == "In Progress")
+                                {
+                                    <span class="status-progress">
+                                        In Progress
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-open">
+                                        @ticket.Status
+                                    </span>
+                                }
+
+                            </div>
+
+                        </a>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="related-empty">
+
+                    <div class="related-empty-icon">
+                        ?
+                    </div>
+
+                    <strong>
+                        No support tickets
+                    </strong>
+
+                    <p>
+                        This employee hasn't reported any IT issues.
+                    </p>
+
+                </div>
+            }
+
+        </section>
+
+    </div>
+
+
+    <!-- FOOTER ACTIONS -->
+
+    <div class="employee-details-footer">
+
+        <a asp-action="Index"
+           class="nexus-secondary-button">
+
+            ← Back to Employees
+
+        </a>
+
+        <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="nexus-primary-button">
+
+            Edit Employee
+
+        </a>
+
+    </div>
+
+</div>

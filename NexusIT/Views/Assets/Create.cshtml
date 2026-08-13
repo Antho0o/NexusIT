@@ -1,0 +1,293 @@
+﻿@model NexusIT.Models.Asset
+
+@{
+    ViewData["Title"] = "Add Asset";
+}
+
+<div class="asset-form-page">
+
+    <div class="asset-form-header">
+
+        <div>
+
+            <a asp-action="Index" class="back-link">
+                ← Back to Assets
+            </a>
+
+            <span class="page-eyebrow">
+                NEXUS IT / ASSETS / NEW
+            </span>
+
+            <h1>Add Asset</h1>
+
+            <p>
+                Register a new piece of IT equipment.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="asset-form-panel">
+
+        <div class="form-panel-header">
+
+            <div>
+                <span class="panel-eyebrow">
+                    ASSET INFORMATION
+                </span>
+
+                <h2>Equipment Details</h2>
+            </div>
+
+        </div>
+
+
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="form-validation">
+            </div>
+
+
+            <div class="asset-form-grid">
+
+                <div class="form-group">
+
+                    <label asp-for="AssetTag">
+                        Asset Tag
+                    </label>
+
+                    <input asp-for="AssetTag"
+                           class="nexus-input"
+                           placeholder="NXS-LAP-001" />
+
+                    <span asp-validation-for="AssetTag"
+                          class="field-validation">
+                    </span>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="AssetType">
+                        Asset Type
+                    </label>
+
+                    <select asp-for="AssetType"
+                            class="nexus-input">
+
+                        <option value="">
+                            Select asset type
+                        </option>
+
+                        <option value="Laptop">
+                            Laptop
+                        </option>
+
+                        <option value="Desktop">
+                            Desktop
+                        </option>
+
+                        <option value="Monitor">
+                            Monitor
+                        </option>
+
+                        <option value="Printer">
+                            Printer
+                        </option>
+
+                        <option value="Mobile">
+                            Mobile Device
+                        </option>
+
+                        <option value="Network">
+                            Network Equipment
+                        </option>
+
+                        <option value="Peripheral">
+                            Peripheral
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="AssetType"
+                          class="field-validation">
+                    </span>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="Brand">
+                        Brand
+                    </label>
+
+                    <input asp-for="Brand"
+                           class="nexus-input"
+                           placeholder="Dell" />
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="Model">
+                        Model
+                    </label>
+
+                    <input asp-for="Model"
+                           class="nexus-input"
+                           placeholder="Latitude 5520" />
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="SerialNumber">
+                        Serial Number
+                    </label>
+
+                    <input asp-for="SerialNumber"
+                           class="nexus-input"
+                           placeholder="Serial number" />
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="PurchaseDate">
+                        Purchase Date
+                    </label>
+
+                    <input asp-for="PurchaseDate"
+                           class="nexus-input" />
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="Status">
+                        Status
+                    </label>
+
+                    <select asp-for="Status"
+                            class="nexus-input">
+
+                        <option value="Available">
+                            Available
+                        </option>
+
+                        <option value="Assigned">
+                            Assigned
+                        </option>
+
+                        <option value="Maintenance">
+                            Maintenance
+                        </option>
+
+                        <option value="Retired">
+                            Retired
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label asp-for="EmployeeId">
+                        Assigned Employee
+                    </label>
+
+                    <select asp-for="EmployeeId"
+                            class="nexus-input">
+
+                        <option value="">
+                            Unassigned
+                        </option>
+
+                        @foreach (var employee in ViewBag.Employees)
+                        {
+                            <option value="@employee.Id">
+                                @employee.FirstName @employee.LastName
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="PurchaseCost">Purchase Cost</label>
+                    <input asp-for="PurchaseCost" class="nexus-input" type="number" min="0" step="0.01" />
+                    <span asp-validation-for="PurchaseCost" class="field-validation"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="WarrantyExpiry">Warranty Expiry</label>
+                    <input asp-for="WarrantyExpiry" class="nexus-input" type="date" />
+                    <span asp-validation-for="WarrantyExpiry" class="field-validation"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Location">Location</label>
+                    <input asp-for="Location" class="nexus-input" placeholder="e.g. Cape Town Office" />
+                    <span asp-validation-for="Location" class="field-validation"></span>
+                </div>
+
+                <div class="form-group form-group-full">
+
+                    <label asp-for="Notes">
+                        Notes
+                    </label>
+
+                    <textarea asp-for="Notes"
+                              class="nexus-input nexus-textarea"
+                              placeholder="Additional information about this asset...">
+                    </textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a asp-action="Index"
+                   class="nexus-secondary-button">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="nexus-primary-button">
+
+                    Add Asset
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

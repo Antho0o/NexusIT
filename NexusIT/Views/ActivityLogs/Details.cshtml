@@ -1,0 +1,401 @@
+﻿@model NexusIT.Models.ActivityLog
+
+@{
+    ViewData["Title"] = "Activity Details";
+
+    string? entityController = Model.EntityType switch
+    {
+        "Asset" => "Assets",
+        "Support Ticket" => "SupportTickets",
+        "Maintenance" => "Maintenance",
+        "Employee" => "Employees",
+        _ => null
+    };
+}
+
+<div class="activity-details-page">
+
+    <!-- HEADER -->
+
+    <div class="activity-details-header">
+
+        <div>
+
+            <a asp-action="Index" class="back-link">
+                ← Back to Activity Log
+            </a>
+
+            <span class="page-eyebrow">
+                NEXUS IT / AUDIT / DETAILS
+            </span>
+
+            <h1>
+                Activity Details
+            </h1>
+
+            <p>
+                Review the full information recorded for this system activity.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- MAIN PANEL -->
+
+    <div class="activity-details-panel">
+
+        <!-- ACTIVITY HEADER -->
+
+        <div class="activity-details-top">
+
+            <div class="activity-details-icon">
+                ◌
+            </div>
+
+            <div class="activity-details-title">
+
+                <span class="panel-eyebrow">
+                    SYSTEM ACTIVITY
+                </span>
+
+                <h2>
+                    @Model.Action
+                </h2>
+
+                <div class="activity-details-meta">
+
+                    @if (!string.IsNullOrWhiteSpace(Model.EntityType))
+                    {
+                        <span class="activity-detail-badge">
+                            @Model.EntityType
+                        </span>
+                    }
+
+                    <span>
+                        Activity #@Model.Id
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DESCRIPTION -->
+
+        <div class="activity-detail-section">
+
+            <span class="detail-section-label">
+                DESCRIPTION
+            </span>
+
+            <div class="activity-description-box">
+
+                @Model.Description
+
+            </div>
+
+        </div>
+
+
+        <!-- INFORMATION GRID -->
+
+        <div class="activity-information-grid">
+
+            <!-- ACTION -->
+
+            <div class="activity-information-card">
+
+                <span class="detail-label">
+                    ACTION
+                </span>
+
+                <strong>
+                    @Model.Action
+                </strong>
+
+            </div>
+
+
+            <!-- ENTITY TYPE -->
+
+            <div class="activity-information-card">
+
+                <span class="detail-label">
+                    ENTITY TYPE
+                </span>
+
+                @if (!string.IsNullOrWhiteSpace(Model.EntityType))
+                {
+                    <strong>
+                        @Model.EntityType
+                    </strong>
+                }
+                else
+                {
+                    <strong class="detail-muted">
+                        Not specified
+                    </strong>
+                }
+
+            </div>
+
+
+            <!-- ENTITY ID -->
+
+            <div class="activity-information-card">
+
+                <span class="detail-label">
+                    ENTITY ID
+                </span>
+
+                @if (Model.EntityId.HasValue)
+                {
+                    @if (!string.IsNullOrWhiteSpace(entityController))
+                    {
+                        <a asp-controller="@entityController"
+                           asp-action="Details"
+                           asp-route-id="@Model.EntityId"
+                           class="activity-entity-link">
+
+                            View #@Model.EntityId
+
+                            <span>
+                                →
+                            </span>
+
+                        </a>
+                    }
+                    else
+                    {
+                        <strong>
+                            #@Model.EntityId
+                        </strong>
+                    }
+                }
+                else
+                {
+                    <strong class="detail-muted">
+                        Not specified
+                    </strong>
+                }
+
+            </div>
+
+
+            <!-- PERFORMED BY -->
+
+            <div class="activity-information-card">
+
+                <span class="detail-label">
+                    PERFORMED BY
+                </span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.PerformedBy)
+                                        ? "System"
+                                        : Model.PerformedBy)
+                </strong>
+
+            </div>
+
+
+            <!-- DATE -->
+
+            <div class="activity-information-card">
+
+                <span class="detail-label">
+                    DATE
+                </span>
+
+                <strong>
+                    @Model.CreatedDate.ToString("dd MMM yyyy")
+                </strong>
+
+            </div>
+
+
+            <!-- TIME -->
+
+            <div class="activity-information-card">
+
+                <span class="detail-label">
+                    TIME
+                </span>
+
+                <strong>
+                    @Model.CreatedDate.ToString("HH:mm:ss")
+                </strong>
+
+            </div>
+
+
+            <!-- IP ADDRESS -->
+
+            <div class="activity-information-card">
+
+                <span class="detail-label">
+                    IP ADDRESS
+                </span>
+
+                @if (!string.IsNullOrWhiteSpace(Model.IpAddress))
+                {
+                    <strong class="ip-address">
+                        @Model.IpAddress
+                    </strong>
+                }
+                else
+                {
+                    <strong class="detail-muted">
+                        Not available
+                    </strong>
+                }
+
+            </div>
+
+
+            <!-- RECORD ID -->
+
+            <div class="activity-information-card">
+
+                <span class="detail-label">
+                    LOG RECORD ID
+                </span>
+
+                <strong>
+                    #@Model.Id
+                </strong>
+
+            </div>
+
+        </div>
+
+        <!-- =================================================
+        ACTIVITY TIMELINE
+        ================================================= -->
+
+        <div class="ticket-details-card ticket-activity-card">
+
+            <div class="details-card-header">
+
+                <span class="panel-eyebrow">
+                    ACTIVITY
+                </span>
+
+                <h2>
+                    Ticket Activity
+                </h2>
+
+            </div>
+
+
+            @if (ViewBag.TicketActivities != null &&
+                        ViewBag.TicketActivities.Count > 0)
+            {
+                <div class="ticket-activity-timeline">
+
+                    @foreach (var activity in ViewBag.TicketActivities)
+                    {
+                        <div class="ticket-activity-item @activity.CssClass">
+
+                            <div class="ticket-activity-line">
+
+                                <div class="ticket-activity-icon">
+                                    @activity.Icon
+                                </div>
+
+                            </div>
+
+
+                            <div class="ticket-activity-content">
+
+                                <div class="ticket-activity-top">
+
+                                    <div>
+
+                                        <strong>
+                                            @activity.Title
+                                        </strong>
+
+                                        @if (activity.IsInternal)
+                                        {
+                                            <span class="internal-comment-badge">
+                                                INTERNAL
+                                            </span>
+                                        }
+
+                                    </div>
+
+
+                                    <time>
+                                        @activity.Date.ToString(
+                                        "dd MMM yyyy, HH:mm")
+                            </time>
+
+                        </div>
+
+
+                        <p>
+                            @activity.Description
+                        </p>
+
+
+                        <span class="ticket-activity-author">
+                            @activity.Author
+                        </span>
+
+                    </div>
+
+                </div>
+                                }
+
+                </div>
+            }
+            else
+            {
+                <div class="ticket-no-data">
+
+                    No activity has been recorded yet.
+
+                </div>
+            }
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="activity-detail-actions">
+
+            @if (Model.EntityId.HasValue &&
+                        !string.IsNullOrWhiteSpace(entityController))
+            {
+                <a asp-controller="@entityController"
+                   asp-action="Details"
+                   asp-route-id="@Model.EntityId"
+                   class="nexus-primary-button">
+
+                    View @Model.EntityType
+
+                    <span>
+                        →
+                    </span>
+
+                </a>
+            }
+
+            <a asp-action="Index"
+               class="nexus-secondary-button">
+
+                ← Back to Activity Log
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

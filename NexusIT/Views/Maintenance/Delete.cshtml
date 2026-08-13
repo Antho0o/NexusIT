@@ -1,0 +1,223 @@
+﻿@model NexusIT.Models.MaintenanceRecord
+
+@{
+    ViewData["Title"] = "Delete Maintenance";
+}
+
+<div class="maintenance-details-page">
+
+    <div class="maintenance-form-header">
+
+        <a asp-action="Details"
+           asp-route-id="@Model.Id"
+           class="back-link">
+
+            ← Back to Maintenance Details
+
+        </a>
+
+        <span class="page-eyebrow">
+            NEXUS IT / MAINTENANCE / DELETE
+        </span>
+
+        <h1>
+            Delete Maintenance Record
+        </h1>
+
+        <p>
+            This action will permanently remove this maintenance record.
+        </p>
+
+    </div>
+
+
+    <div class="maintenance-delete-panel">
+
+
+        <div class="delete-warning">
+
+            <div class="delete-warning-icon">
+                !
+            </div>
+
+            <div>
+
+                <h2>
+                    Are you sure?
+                </h2>
+
+                <p>
+                    You are about to permanently delete this
+                    maintenance record. This action cannot be undone.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- RECORD SUMMARY -->
+
+        <div class="delete-record-summary">
+
+
+            <div class="delete-summary-item">
+
+                <span>
+                    ASSET
+                </span>
+
+                @if (Model.Asset != null)
+                {
+
+                    <strong>
+                        @Model.Asset.AssetTag
+                    </strong>
+
+                    <small>
+                        @Model.Asset.Brand
+                        @Model.Asset.Model
+                    </small>
+
+                }
+                else
+                {
+
+                    <strong>
+                        No asset
+                    </strong>
+
+                }
+
+            </div>
+
+
+            <div class="delete-summary-item">
+
+                <span>
+                    MAINTENANCE TYPE
+                </span>
+
+                <strong>
+                    @Model.MaintenanceType
+                </strong>
+
+            </div>
+
+
+            <div class="delete-summary-item">
+
+                <span>
+                    SCHEDULED DATE
+                </span>
+
+                <strong>
+                    @Model.ScheduledDate.ToString("dd MMM yyyy")
+                </strong>
+
+            </div>
+
+
+            <div class="delete-summary-item">
+
+                <span>
+                    STATUS
+                </span>
+
+                <strong>
+                    @Model.Status
+                </strong>
+
+            </div>
+
+
+            <div class="delete-summary-item">
+
+                <span>
+                    TECHNICIAN
+                </span>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Technician))
+                {
+
+                    <strong>
+                        @Model.Technician
+                    </strong>
+
+                }
+                else
+                {
+
+                    <strong>
+                        Unassigned
+                    </strong>
+
+                }
+
+            </div>
+
+
+            <div class="delete-summary-item">
+
+                <span>
+                    COST
+                </span>
+
+                @if (Model.Cost.HasValue)
+                {
+
+                    <strong>
+                        @Model.Cost.Value.ToString("C")
+                    </strong>
+
+                }
+                else
+                {
+
+                    <strong>
+                        —
+                    </strong>
+
+                }
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <form asp-action="Delete"
+              method="post">
+
+            <input type="hidden"
+                   asp-for="Id" />
+
+
+            <div class="form-actions">
+
+                <a asp-action="Details"
+                   asp-route-id="@Model.Id"
+                   class="nexus-secondary-button">
+
+                    Cancel
+
+                </a>
+
+
+                <button type="submit"
+                        class="nexus-danger-button">
+
+                    Delete Record
+
+                </button>
+
+            </div>
+
+        </form>
+
+
+    </div>
+
+</div>

@@ -1,0 +1,169 @@
+@model NexusIT.ViewModels.AssetDetailsViewModel
+
+@{
+    ViewData["Title"] = "Asset Details";
+    var asset = Model.Asset;
+    var statusClass = asset.Status.ToLowerInvariant().Replace(" ", "-");
+}
+
+<div class="asset-details-page">
+    <div class="asset-details-header">
+        <div>
+            <a asp-action="Index" class="back-link">← Back to Assets</a>
+            <span class="page-eyebrow">NEXUS IT / ASSETS / LIFECYCLE</span>
+            <h1>@asset.AssetTag</h1>
+            <p>@asset.Brand @asset.Model · @asset.AssetType</p>
+        </div>
+        <div class="details-actions">
+            <a asp-action="Edit" asp-route-id="@asset.Id" class="nexus-primary-button">Edit Asset</a>
+            <a asp-action="Delete" asp-route-id="@asset.Id" class="nexus-danger-button">Delete</a>
+        </div>
+    </div>
+
+    <div class="asset-lifecycle-banner">
+        <div>
+            <span class="panel-eyebrow">CURRENT LIFECYCLE STATE</span>
+            <div class="asset-lifecycle-title">@asset.Status</div>
+            <p>
+                @(asset.Status == "Assigned" ? "Currently deployed to an employee." :
+                  asset.Status == "Maintenance" ? "Temporarily unavailable while maintenance is in progress." :
+                  asset.Status == "Retired" ? "Removed from active inventory." :
+                  "Available for assignment.")
+            </p>
+        </div>
+        <span class="asset-status status-@statusClass">@asset.Status</span>
+    </div>
+
+    <div class="asset-details-grid">
+        <div class="asset-details-card">
+            <div class="details-card-header">
+                <span class="panel-eyebrow">ASSET INFORMATION</span>
+                <h2>Equipment Details</h2>
+            </div>
+            <div class="details-list">
+                <div class="details-row"><span>Asset Tag</span><strong>@asset.AssetTag</strong></div>
+                <div class="details-row"><span>Asset Type</span><strong>@asset.AssetType</strong></div>
+                <div class="details-row"><span>Brand</span><strong>@asset.Brand</strong></div>
+                <div class="details-row"><span>Model</span><strong>@asset.Model</strong></div>
+                <div class="details-row"><span>Serial Number</span><strong>@(string.IsNullOrWhiteSpace(asset.SerialNumber) ? "Not recorded" : asset.SerialNumber)</strong></div>
+                <div class="details-row"><span>Location</span><strong>@(string.IsNullOrWhiteSpace(asset.Location) ? "Not recorded" : asset.Location)</strong></div>
+                <div class="details-row"><span>Purchase Date</span><strong>@(asset.PurchaseDate?.ToString("dd MMMM yyyy") ?? "Not recorded")</strong></div>
+                <div class="details-row"><span>Purchase Cost</span><strong>@(asset.PurchaseCost.HasValue ? asset.PurchaseCost.Value.ToString("C2") : "Not recorded")</strong></div>
+            </div>
+        </div>
+
+        <div class="asset-details-card">
+            <div class="details-card-header">
+                <span class="panel-eyebrow">WARRANTY</span>
+                <h2>Coverage</h2>
+            </div>
+            <div class="warranty-panel @(Model.WarrantyExpired ? "warranty-expired" : Model.WarrantyActive ? "warranty-active" : "")">
+                <strong>
+                    @(asset.WarrantyExpiry?.ToString("dd MMMM yyyy") ?? "No warranty date recorded")
+                </strong>
+                <span>
+                    @(Model.WarrantyExpired ? "Warranty expired" : Model.WarrantyActive ? "Warranty currently active" : "Warranty status unavailable")
+                </span>
+            </div>
+            <div class="asset-mini-stats">
+                <div><strong>@Model.TicketCount</strong><span>Related tickets</span></div>
+                <div><strong>@Model.MaintenanceCount</strong><span>Maintenance records</span></div>
+                <div><strong>@Model.MaintenanceSpend.ToString("C2")</strong><span>Maintenance spend</span></div>
+            </div>
+        </div>
+
+        <div class="asset-details-card">
+            <div class="details-card-header">
+                <span class="panel-eyebrow">ASSIGNMENT</span>
+                <h2>Current Owner</h2>
+            </div>
+            @if (asset.Employee != null)
+            {
+                <div class="assigned-detail-person">
+                    <div class="large-employee-avatar">@asset.Employee.FirstName.Substring(0, 1).ToUpper()</div>
+                    <div><strong>@asset.Employee.FirstName @asset.Employee.LastName</strong><span>Employee ID #@asset.Employee.Id</span></div>
+                </div>
+            }
+            else
+            {
+                <div class="unassigned-detail">This asset is currently unassigned.</div>
+            }
+        </div>
+
+        <div class="asset-details-card">
+            <div class="details-card-header">
+                <span class="panel-eyebrow">LIFECYCLE ACTIONS</span>
+                <h2>Manage Asset</h2>
+            </div>
+            <div class="lifecycle-actions">
+                @if (asset.Status != "Retired")
+                {
+                    @if (asset.Status == "Assigned")
+                    {
+                        <form asp-action="Return" asp-route-id="@asset.Id" method="post"><button class="lifecycle-action" type="submit">↩ Return to Inventory</button></form>
+                    }
+                    @if (asset.Status != "Maintenance")
+                    {
+                        <form asp-action="SendToMaintenance" asp-route-id="@asset.Id" method="post"><button class="lifecycle-action" type="submit">⚙ Send to Maintenance</button></form>
+                    }
+                    <form asp-action="Retire" asp-route-id="@asset.Id" method="post"><button class="lifecycle-action lifecycle-danger" type="submit">Retire Asset</button></form>
+                }
+                else
+                {
+                    <form asp-action="Restore" asp-route-id="@asset.Id" method="post"><button class="lifecycle-action" type="submit">Restore to Inventory</button></form>
+                }
+            </div>
+            <div class="assign-inline">
+                <span class="detail-label">ASSIGN TO EMPLOYEE</span>
+                <form asp-action="Assign" asp-route-id="@asset.Id" method="post" class="assign-form">
+                    <select name="employeeId" class="nexus-input" required>
+                        <option value="">Select employee...</option>
+                        @if (ViewBag.Employees is IEnumerable<NexusIT.Models.Employee> employees)
+                        {
+                            foreach (var employee in employees)
+                            {
+                                <option value="@employee.Id">@employee.FirstName @employee.LastName</option>
+                            }
+                        }
+                    </select>
+                    <button class="nexus-primary-button" type="submit">Assign</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="asset-details-card details-full-width">
+            <div class="details-card-header">
+                <span class="panel-eyebrow">ASSET TIMELINE</span>
+                <h2>Lifecycle History</h2>
+            </div>
+            @if (Model.History.Any())
+            {
+                <div class="asset-history-timeline">
+                    @foreach (var item in Model.History)
+                    {
+                        <div class="asset-history-item">
+                            <div class="asset-history-dot"></div>
+                            <div class="asset-history-content">
+                                <div class="asset-history-top"><strong>@item.Action</strong><span>@item.CreatedAt.ToString("dd MMM yyyy · HH:mm")</span></div>
+                                <p>@item.Notes</p>
+                                <div class="asset-history-meta">@item.PerformedBy
+                                    @if (!string.IsNullOrWhiteSpace(item.PreviousStatus) || !string.IsNullOrWhiteSpace(item.NewStatus))
+                                    { <span>@item.PreviousStatus → @item.NewStatus</span> }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="asset-empty-history">No lifecycle history has been recorded yet.</div>
+            }
+        </div>
+
+        <div class="asset-details-card details-full-width">
+            <div class="details-card-header"><span class="panel-eyebrow">NOTES</span><h2>Additional Information</h2></div>
+            <div class="asset-notes">@(string.IsNullOrWhiteSpace(asset.Notes) ? "No additional notes have been added." : asset.Notes)</div>
+        </div>
+    </div>
+</div>

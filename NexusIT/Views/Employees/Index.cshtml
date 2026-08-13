@@ -1,0 +1,197 @@
+﻿
+@model IEnumerable<NexusIT.Models.Employee>
+
+@{
+    ViewData["Title"] = "Employees";
+}
+
+<div class="nexus-page">
+
+    <div class="page-header">
+        <div>
+            <span class="page-eyebrow">NEXUS IT / PEOPLE</span>
+            <h1>Employees</h1>
+            <p>Manage employees and their IT assignments.</p>
+        </div>
+
+        <a asp-action="Create" class="nexus-btn nexus-btn-primary">
+            <span>+</span>
+            Add Employee
+        </a>
+    </div>
+
+    <div class="nexus-card">
+
+        <div class="card-header">
+            <div>
+                <h2>Employee Directory</h2>
+                <p>@Model.Count() employees registered</p>
+            </div>
+
+            <div class="search-box">
+                <span>⌕</span>
+                <input type="text" id="employeeSearch" placeholder="Search employees..." />
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table class="nexus-table" id="employeeTable">
+
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Department</th>
+                        <th>Job Title</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var employee in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                <div class="employee-cell">
+
+                                    <div class="employee-avatar">
+                                        @employee.FirstName.Substring(0, 1)@employee.LastName.Substring(0, 1)
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            @employee.FirstName @employee.LastName
+                                        </strong>
+
+                                        <span>
+                                            @employee.Email
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                @employee.Department
+                            </td>
+
+                            <td>
+                                @employee.JobTitle
+                            </td>
+
+                            <td>
+                                @employee.Location
+                            </td>
+
+                            <td>
+
+                                @if (employee.IsActive)
+                                {
+                                    <span class="status-badge status-active">
+                                        <span class="status-dot"></span>
+                                        Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge status-inactive">
+                                        <span class="status-dot"></span>
+                                        Inactive
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td class="text-right">
+
+                                <div class="action-buttons">
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@employee.Id"
+                                       class="action-btn"
+                                       title="View">
+                                        View
+                                    </a>
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@employee.Id"
+                                       class="action-btn"
+                                       title="Edit">
+                                        Edit
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@employee.Id"
+                                       class="action-btn action-danger"
+                                       title="Delete">
+                                        Delete
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    👥
+                </div>
+
+                <h3>No employees yet</h3>
+
+                <p>
+                    Add your first employee to begin building the directory.
+                </p>
+
+                <a asp-action="Create" class="nexus-btn nexus-btn-primary">
+                    Add Employee
+                </a>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        const searchInput = document.getElementById("employeeSearch");
+
+        searchInput.addEventListener("keyup", function () {
+
+            const searchValue = this.value.toLowerCase();
+
+            const rows = document.querySelectorAll("#employeeTable tbody tr");
+
+            rows.forEach(row => {
+
+                const rowText = row.innerText.toLowerCase();
+
+                row.style.display =
+                    rowText.includes(searchValue) ? "" : "none";
+
+            });
+
+        });
+
+    </script>
+
+}

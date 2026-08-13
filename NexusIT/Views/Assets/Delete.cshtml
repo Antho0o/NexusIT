@@ -1,0 +1,135 @@
+﻿@model NexusIT.Models.Asset
+
+@{
+    ViewData["Title"] = "Delete Asset";
+}
+
+<div class="delete-page">
+
+    <div class="delete-header">
+
+        <a asp-action="Index" class="back-link">
+            ← Back to Assets
+        </a>
+
+        <span class="page-eyebrow">
+            NEXUS IT / ASSETS / DELETE
+        </span>
+
+        <h1>
+            Delete Asset
+        </h1>
+
+        <p>
+            This action cannot be undone.
+        </p>
+
+    </div>
+
+
+    <div class="delete-card">
+
+        <div class="delete-icon">
+            !
+        </div>
+
+
+        <div class="delete-content">
+
+            <span class="panel-eyebrow">
+                CONFIRM DELETION
+            </span>
+
+            <h2>
+                Are you sure?
+            </h2>
+
+            <p>
+                You are about to permanently remove this asset
+                from the NexusIT inventory.
+            </p>
+
+        </div>
+
+
+        <div class="delete-asset">
+
+            <div class="asset-icon">
+                ▣
+            </div>
+
+            <div>
+
+                <strong>
+                    @Model.AssetTag
+                </strong>
+
+                <span>
+                    @Model.Brand @Model.Model
+                </span>
+
+                <span>
+                    @Model.SerialNumber
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="delete-details">
+
+            <div>
+                <span>TYPE</span>
+                <strong>@Model.AssetType</strong>
+            </div>
+
+            <div>
+                <span>STATUS</span>
+                <strong>@Model.Status</strong>
+            </div>
+
+            <div>
+                <span>ASSIGNED TO</span>
+
+                <strong>
+                    @if (Model.Employee != null)
+                    {
+                        @Model.Employee.FirstName @Model.Employee.LastName
+                    }
+                    else
+                    {
+                        <text>Unassigned</text>
+                    }
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <form asp-action="Delete"
+              asp-route-id="@Model.Id"
+              method="post">
+
+            <div class="delete-actions">
+
+                <a asp-action="Index"
+                   class="nexus-secondary-button">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="nexus-danger-button">
+
+                    Delete Asset
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

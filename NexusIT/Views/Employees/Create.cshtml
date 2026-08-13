@@ -1,0 +1,221 @@
+﻿@model NexusIT.Models.Employee
+
+@{
+    ViewData["Title"] = "Add Employee";
+}
+
+<div class="nexus-page">
+
+    <div class="page-header">
+
+        <div>
+            <span class="page-eyebrow">NEXUS IT / PEOPLE</span>
+            <h1>Add Employee</h1>
+            <p>Create a new employee profile.</p>
+        </div>
+
+        <a asp-action="Index" class="nexus-btn nexus-btn-secondary">
+            ← Back to Employees
+        </a>
+
+    </div>
+
+    <div class="nexus-card form-card">
+
+        <form asp-action="Create">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary"></div>
+
+            <div class="form-section">
+
+                <div class="form-section-title">
+                    <h2>Personal Information</h2>
+                    <p>Basic employee details.</p>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label asp-for="FirstName">
+                            First Name
+                        </label>
+
+                        <input asp-for="FirstName"
+                               class="form-control"
+                               placeholder="Joshua" />
+
+                        <span asp-validation-for="FirstName"
+                              class="validation-message"></span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label asp-for="LastName">
+                            Last Name
+                        </label>
+
+                        <input asp-for="LastName"
+                               class="form-control"
+                               placeholder="Barnes" />
+
+                        <span asp-validation-for="LastName"
+                              class="validation-message"></span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label asp-for="Email">
+                            Email Address
+                        </label>
+
+                        <input asp-for="Email"
+                               class="form-control"
+                               placeholder="employee@company.com" />
+
+                        <span asp-validation-for="Email"
+                              class="validation-message"></span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label asp-for="PhoneNumber">
+                            Phone Number
+                        </label>
+
+                        <input asp-for="PhoneNumber"
+                               class="form-control"
+                               placeholder="+27 00 000 0000" />
+
+                        <span asp-validation-for="PhoneNumber"
+                              class="validation-message"></span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-section">
+
+                <div class="form-section-title">
+                    <h2>Employment Information</h2>
+                    <p>Company and workplace details.</p>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label asp-for="Department">
+                            Department
+                        </label>
+
+                        <input asp-for="Department"
+                               class="form-control"
+                               placeholder="IT" />
+
+                        <span asp-validation-for="Department"
+                              class="validation-message"></span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label asp-for="JobTitle">
+                            Job Title
+                        </label>
+
+                        <input asp-for="JobTitle"
+                               class="form-control"
+                               placeholder="Desktop Support Technician" />
+
+                        <span asp-validation-for="JobTitle"
+                              class="validation-message"></span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label asp-for="Location">
+                            Location
+                        </label>
+
+                        <input asp-for="Location"
+                               class="form-control"
+                               placeholder="Head Office" />
+
+                        <span asp-validation-for="Location"
+                              class="validation-message"></span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label asp-for="DateJoined">
+                            Date Joined
+                        </label>
+
+                        <input asp-for="DateJoined"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="DateJoined"
+                              class="validation-message"></span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-section">
+
+                <div class="form-check-row">
+
+                    <input asp-for="IsActive"
+                           class="form-check-input" />
+
+                    <div>
+                        <label asp-for="IsActive">
+                            Active Employee
+                        </label>
+
+                        <p>
+                            Active employees can be assigned IT assets and tickets.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <a asp-action="Index"
+                   class="nexus-btn nexus-btn-secondary">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="nexus-btn nexus-btn-primary">
+                    Create Employee
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

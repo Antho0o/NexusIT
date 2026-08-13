@@ -1,0 +1,741 @@
+﻿@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="reports-page">
+
+    <!-- HEADER -->
+
+    <div class="reports-header">
+
+        <div>
+
+            <span class="page-eyebrow">
+                NEXUS IT / ANALYTICS
+            </span>
+
+            <h1>
+                Reports & Analytics
+            </h1>
+
+            <p>
+                Monitor IT operations, support activity,
+                assets and maintenance performance.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- OVERVIEW -->
+
+    <div class="reports-section">
+
+        <div class="section-heading">
+
+            <span class="panel-eyebrow">
+                OPERATIONS OVERVIEW
+            </span>
+
+            <h2>
+                System Summary
+            </h2>
+
+        </div>
+
+
+        <div class="report-card-grid">
+
+            <!-- Employees -->
+
+            <div class="report-stat-card">
+
+                <div class="report-stat-icon">
+                    ◉
+                </div>
+
+                <div class="report-stat-content">
+
+                    <span>
+                        EMPLOYEES
+                    </span>
+
+                    <strong>
+                        @ViewBag.TotalEmployees
+                    </strong>
+
+                    <small>
+                        @ViewBag.ActiveEmployees active
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- Assets -->
+
+            <div class="report-stat-card">
+
+                <div class="report-stat-icon">
+                    ▣
+                </div>
+
+                <div class="report-stat-content">
+
+                    <span>
+                        IT ASSETS
+                    </span>
+
+                    <strong>
+                        @ViewBag.TotalAssets
+                    </strong>
+
+                    <small>
+                        @ViewBag.AssignedAssets assigned
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- Tickets -->
+
+            <div class="report-stat-card">
+
+                <div class="report-stat-icon">
+                    ◇
+                </div>
+
+                <div class="report-stat-content">
+
+                    <span>
+                        SUPPORT TICKETS
+                    </span>
+
+                    <strong>
+                        @ViewBag.TotalTickets
+                    </strong>
+
+                    <small>
+                        @ViewBag.OpenTickets open
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- Maintenance -->
+
+            <div class="report-stat-card">
+
+                <div class="report-stat-icon">
+                    ↻
+                </div>
+
+                <div class="report-stat-content">
+
+                    <span>
+                        MAINTENANCE
+                    </span>
+
+                    <strong>
+                        @ViewBag.TotalMaintenance
+                    </strong>
+
+                    <small>
+                        @ViewBag.InProgressMaintenance in progress
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUPPORT TICKETS -->
+
+    <div class="reports-section">
+
+        <div class="section-heading">
+
+            <span class="panel-eyebrow">
+                SERVICE DESK
+            </span>
+
+            <h2>
+                Ticket Performance
+            </h2>
+
+        </div>
+
+
+        <div class="analytics-grid">
+
+
+            <!-- Ticket Status -->
+
+            <div class="analytics-panel">
+
+                <div class="analytics-panel-header">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            STATUS
+                        </span>
+
+                        <h3>
+                            Ticket Status
+                        </h3>
+
+                    </div>
+
+                    <span class="analytics-total">
+                        @ViewBag.TotalTickets
+                    </span>
+
+                </div>
+
+
+                <div class="analytics-list">
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Open
+                        </span>
+
+                        <strong>
+                            @ViewBag.OpenTickets
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row">
+
+                        <span>
+                            In Progress
+                        </span>
+
+                        <strong>
+                            @ViewBag.InProgressTickets
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Waiting
+                        </span>
+
+                        <strong>
+                            @ViewBag.WaitingTickets
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Closed
+                        </span>
+
+                        <strong>
+                            @ViewBag.ClosedTickets
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Priority -->
+
+            <div class="analytics-panel">
+
+                <div class="analytics-panel-header">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            PRIORITY
+                        </span>
+
+                        <h3>
+                            Ticket Priority
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="analytics-list">
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Low
+                        </span>
+
+                        <strong>
+                            @ViewBag.LowPriority
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Medium
+                        </span>
+
+                        <strong>
+                            @ViewBag.MediumPriority
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row">
+
+                        <span>
+                            High
+                        </span>
+
+                        <strong>
+                            @ViewBag.HighPriority
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Critical
+                        </span>
+
+                        <strong>
+                            @ViewBag.CriticalPriority
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TICKET CATEGORIES -->
+
+    <div class="reports-section">
+
+        <div class="section-heading">
+
+            <span class="panel-eyebrow">
+                ISSUE ANALYSIS
+            </span>
+
+            <h2>
+                Tickets by Category
+            </h2>
+
+        </div>
+
+
+        <div class="category-grid">
+
+            <div class="category-card">
+                <span>Hardware</span>
+                <strong>@ViewBag.HardwareTickets</strong>
+            </div>
+
+            <div class="category-card">
+                <span>Software</span>
+                <strong>@ViewBag.SoftwareTickets</strong>
+            </div>
+
+            <div class="category-card">
+                <span>Network</span>
+                <strong>@ViewBag.NetworkTickets</strong>
+            </div>
+
+            <div class="category-card">
+                <span>Security</span>
+                <strong>@ViewBag.SecurityTickets</strong>
+            </div>
+
+            <div class="category-card">
+                <span>Email</span>
+                <strong>@ViewBag.EmailTickets</strong>
+            </div>
+
+            <div class="category-card">
+                <span>Access</span>
+                <strong>@ViewBag.AccessTickets</strong>
+            </div>
+
+            <div class="category-card">
+                <span>Printer</span>
+                <strong>@ViewBag.PrinterTickets</strong>
+            </div>
+
+            <div class="category-card">
+                <span>General</span>
+                <strong>@ViewBag.GeneralTickets</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ASSETS + MAINTENANCE -->
+
+    <div class="reports-section">
+
+        <div class="section-heading">
+
+            <span class="panel-eyebrow">
+                ASSET MANAGEMENT
+            </span>
+
+            <h2>
+                Asset & Maintenance Overview
+            </h2>
+
+        </div>
+
+
+        <div class="analytics-grid">
+
+
+            <!-- Assets -->
+
+            <div class="analytics-panel">
+
+                <div class="analytics-panel-header">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            ASSETS
+                        </span>
+
+                        <h3>
+                            Asset Allocation
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="analytics-list">
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Total Assets
+                        </span>
+
+                        <strong>
+                            @ViewBag.TotalAssets
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Assigned
+                        </span>
+
+                        <strong>
+                            @ViewBag.AssignedAssets
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Available
+                        </span>
+
+                        <strong>
+                            @ViewBag.AvailableAssets
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Maintenance
+                        </span>
+
+                        <strong>
+                            @ViewBag.MaintenanceAssets
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Maintenance -->
+
+            <div class="analytics-panel">
+
+                <div class="analytics-panel-header">
+
+                    <div>
+
+                        <span class="panel-eyebrow">
+                            MAINTENANCE
+                        </span>
+
+                        <h3>
+                            Maintenance Overview
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="analytics-list">
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Scheduled
+                        </span>
+
+                        <strong>
+                            @ViewBag.ScheduledMaintenance
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row">
+
+                        <span>
+                            In Progress
+                        </span>
+
+                        <strong>
+                            @ViewBag.InProgressMaintenance
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row">
+
+                        <span>
+                            Completed
+                        </span>
+
+                        <strong>
+                            @ViewBag.CompletedMaintenance
+                        </strong>
+
+                    </div>
+
+                    <div class="analytics-row analytics-cost">
+
+                        <span>
+                            Total Cost
+                        </span>
+
+                        <strong>
+                            @ViewBag.MaintenanceCost.ToString("C")
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RECENT TICKETS -->
+
+    <div class="reports-section">
+
+        <div class="section-heading">
+
+            <span class="panel-eyebrow">
+                SERVICE DESK
+            </span>
+
+            <div class="section-heading-row">
+
+                <h2>
+                    Recent Support Tickets
+                </h2>
+
+                <a asp-controller="SupportTickets"
+                   asp-action="Index"
+                   class="report-link">
+
+                    View all →
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="reports-table-panel">
+
+            @if (ViewBag.RecentTickets.Count == 0)
+            {
+                <div class="reports-empty">
+
+                    <span>
+                        ◇
+                    </span>
+
+                    <h3>
+                        No support tickets
+                    </h3>
+
+                    <p>
+                        There are currently no support tickets to report.
+                    </p>
+
+                </div>
+            }
+            else
+            {
+                <div class="reports-table-wrapper">
+
+                    <table class="reports-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    TICKET
+                                </th>
+
+                                <th>
+                                    EMPLOYEE
+                                </th>
+
+                                <th>
+                                    CATEGORY
+                                </th>
+
+                                <th>
+                                    PRIORITY
+                                </th>
+
+                                <th>
+                                    STATUS
+                                </th>
+
+                                <th>
+                                    DATE
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var ticket in ViewBag.RecentTickets)
+                            {
+                                <tr>
+
+                                    <td>
+
+                                        <strong>
+                                            #@ticket.Id.ToString("D4")
+                                        </strong>
+
+                                        <span class="table-subtext">
+                                            @ticket.Title
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        @if (ticket.Employee != null)
+                                        {
+                                            @ticket.Employee.FirstName
+                                            @ticket.Employee.LastName
+                                        }
+                                        else
+                                        {
+                                            <span class="muted">
+                                                Unassigned
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td>
+                                        @ticket.Category
+                                    </td>
+
+                                    <td>
+
+                                        <span class="report-badge priority-@ticket.Priority.ToLower().Replace(" ", "-")">
+                                            @ticket.Priority
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="report-badge status-@ticket.Status.ToLower().Replace(" ", "-")">
+                                            @ticket.Status
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+                                        @ticket.CreatedDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,539 @@
+﻿/* =========================================================
+   NEXUS IT
+   AUTHENTICATION UI
+   Premium Dark Login / Register
+   ========================================================= */
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.nexus-auth-page {
+    min-height: calc(100vh - 70px);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 55px 20px 70px;
+    position: relative;
+    overflow: hidden;
+}
+
+
+    /* subtle background glow */
+
+    .nexus-auth-page::before {
+        content: "";
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        top: -300px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: radial-gradient( circle, rgba(255,255,255,0.035), transparent 68% );
+        pointer-events: none;
+    }
+
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.nexus-auth-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 455px;
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.nexus-auth-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    margin-bottom: 28px;
+}
+
+.nexus-auth-logo {
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 11px;
+    background: linear-gradient( 145deg, rgba(255,255,255,0.09), rgba(255,255,255,0.025) );
+    color: #f1f4f8;
+    font-size: 18px;
+    font-weight: 800;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.nexus-auth-brand strong {
+    display: block;
+    color: #f3f5f8;
+    font-size: 17px;
+    font-weight: 750;
+    letter-spacing: 0.02em;
+}
+
+    .nexus-auth-brand strong span {
+        color: #8994a7;
+    }
+
+.nexus-auth-brand small {
+    display: block;
+    margin-top: 2px;
+    color: #5f6a7b;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+}
+
+
+/* =========================================================
+   AUTH CARD
+   ========================================================= */
+
+.nexus-auth-card {
+    padding: 34px;
+    border: 1px solid rgba(255,255,255,0.075);
+    border-radius: 17px;
+    background: linear-gradient( 145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015) );
+    box-shadow: 0 25px 70px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.025);
+}
+
+.nexus-register-card {
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.nexus-auth-card-header {
+    margin-bottom: 27px;
+}
+
+.nexus-auth-eyebrow {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: #6e798b;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 0.16em;
+}
+
+.nexus-auth-card-header h1 {
+    margin: 0;
+    color: #f2f5f8;
+    font-size: 29px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+}
+
+.nexus-auth-card-header p {
+    margin: 10px 0 0;
+    color: #778295;
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.nexus-auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 19px;
+}
+
+.nexus-form-group {
+    width: 100%;
+}
+
+    .nexus-form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #aab3c0;
+        font-size: 11px;
+        font-weight: 650;
+    }
+
+
+/* =========================================================
+   LABEL ROW
+   ========================================================= */
+
+.nexus-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+    .nexus-label-row label {
+        margin-bottom: 0;
+    }
+
+.nexus-forgot-link {
+    color: #7e899b;
+    font-size: 10px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+    .nexus-forgot-link:hover {
+        color: #dce1e8;
+    }
+
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+.nexus-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.nexus-input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #606b7c;
+    font-size: 13px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.nexus-auth-input {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px 0 39px;
+    border: 1px solid rgba(255,255,255,0.075);
+    border-radius: 9px;
+    outline: none;
+    background: rgba(255,255,255,0.025);
+    color: #e5e9ef;
+    font-family: inherit;
+    font-size: 12px;
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .nexus-auth-input::placeholder {
+        color: #596476;
+    }
+
+    .nexus-auth-input:hover {
+        border-color: rgba(255,255,255,0.11);
+    }
+
+    .nexus-auth-input:focus {
+        border-color: rgba(255,255,255,0.18);
+        background: rgba(255,255,255,0.04);
+        box-shadow: 0 0 0 3px rgba(255,255,255,0.025);
+    }
+
+
+/* =========================================================
+   PASSWORD
+   ========================================================= */
+
+.nexus-password-input {
+    padding-right: 44px;
+}
+
+.nexus-password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #687486;
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+    .nexus-password-toggle:hover {
+        background: rgba(255,255,255,0.05);
+        color: #d9dee7;
+    }
+
+
+/* =========================================================
+   REMEMBER ME
+   ========================================================= */
+
+.nexus-remember-row {
+    margin-top: -3px;
+}
+
+.nexus-checkbox {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 9px;
+    margin: 0 !important;
+    color: #778295 !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+}
+
+    .nexus-checkbox input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+.nexus-checkbox-mark {
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.025);
+    transition: all 0.2s ease;
+}
+
+.nexus-checkbox input:checked + .nexus-checkbox-mark {
+    background: #e9edf2;
+    border-color: #e9edf2;
+}
+
+    .nexus-checkbox input:checked + .nexus-checkbox-mark::after {
+        content: "✓";
+        color: #101318;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
+.nexus-auth-submit {
+    width: 100%;
+    height: 47px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px 0 18px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 9px;
+    background: #edf0f4;
+    color: #101318;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .nexus-auth-submit:hover {
+        background: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.24);
+    }
+
+    .nexus-auth-submit:active {
+        transform: translateY(0);
+    }
+
+.nexus-submit-arrow {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background: rgba(0,0,0,0.07);
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.nexus-auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 26px 0 18px;
+}
+
+    .nexus-auth-divider span {
+        flex: 1;
+        height: 1px;
+        background: rgba(255,255,255,0.055);
+    }
+
+    .nexus-auth-divider small {
+        color: #566173;
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.13em;
+        white-space: nowrap;
+    }
+
+
+/* =========================================================
+   SECONDARY BUTTON
+   ========================================================= */
+
+.nexus-auth-secondary {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px 0 16px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 9px;
+    background: rgba(255,255,255,0.02);
+    color: #aab3c0;
+    font-size: 11px;
+    font-weight: 650;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+    .nexus-auth-secondary span {
+        color: #697486;
+        font-size: 15px;
+        transition: transform 0.2s ease;
+    }
+
+    .nexus-auth-secondary:hover {
+        border-color: rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.035);
+        color: #e0e5ec;
+    }
+
+        .nexus-auth-secondary:hover span {
+            transform: translateX(3px);
+        }
+
+
+/* =========================================================
+   VALIDATION
+   ========================================================= */
+
+.nexus-validation-summary {
+    padding: 11px 13px;
+    border: 1px solid rgba(170,100,100,0.22);
+    border-radius: 8px;
+    background: rgba(170,70,70,0.06);
+    color: #c9a3a8;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+    .nexus-validation-summary:empty {
+        display: none;
+    }
+
+    .nexus-validation-summary ul {
+        margin: 0;
+        padding-left: 16px;
+    }
+
+.nexus-field-validation {
+    display: block;
+    margin-top: 6px;
+    color: #b88e95;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.nexus-auth-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 24px;
+    color: #4f5a6b;
+    font-size: 9px;
+}
+
+.nexus-footer-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #4f5a6b;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .nexus-auth-page {
+        min-height: calc(100vh - 60px);
+        padding: 35px 16px 45px;
+    }
+
+    .nexus-auth-card {
+        padding: 26px 21px;
+        border-radius: 14px;
+    }
+
+    .nexus-auth-brand {
+        margin-bottom: 22px;
+    }
+
+    .nexus-auth-card-header h1 {
+        font-size: 26px;
+    }
+
+    .nexus-auth-footer {
+        text-align: center;
+    }
+}
+
+
+@media (max-width: 400px) {
+
+    .nexus-auth-page {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .nexus-auth-card {
+        padding: 23px 17px;
+    }
+
+    .nexus-auth-card-header h1 {
+        font-size: 24px;
+    }
+}

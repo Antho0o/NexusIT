@@ -1,0 +1,609 @@
+﻿@model IEnumerable<NexusIT.Models.MaintenanceRecord>
+
+@{
+    ViewData["Title"] = "Maintenance";
+
+    var records = Model?.ToList()
+        ?? new List<NexusIT.Models.MaintenanceRecord>();
+
+    var totalRecords = ViewBag.TotalMaintenance ?? records.Count;
+    var scheduled = ViewBag.ScheduledMaintenance ?? 0;
+    var inProgress = ViewBag.InProgressMaintenance ?? 0;
+    var completed = ViewBag.CompletedMaintenance ?? 0;
+}
+
+<div class="maintenance-page">
+
+    <!-- PAGE HEADER -->
+    <section class="maintenance-hero">
+
+        <div class="maintenance-hero-content">
+
+            <div class="maintenance-hero-icon">
+                <span>↻</span>
+            </div>
+
+            <div>
+
+                <span class="page-eyebrow">
+                    NEXUS IT / ASSET MANAGEMENT
+                </span>
+
+                <h1>
+                    Maintenance
+                </h1>
+
+                <p>
+                    Schedule, track and manage IT asset maintenance.
+                </p>
+
+            </div>
+
+        </div>
+
+        <a asp-action="Create"
+           class="nexus-primary-button">
+
+            <span class="button-plus">+</span>
+
+            Schedule Maintenance
+
+        </a>
+
+    </section>
+
+
+    <!-- SUMMARY -->
+    <section class="maintenance-summary">
+
+        <div class="maintenance-summary-card">
+
+            <div class="maintenance-summary-icon">
+                ▤
+            </div>
+
+            <div class="maintenance-summary-content">
+
+                <span>TOTAL RECORDS</span>
+
+                <strong>@totalRecords</strong>
+
+                <small>All maintenance activity</small>
+
+            </div>
+
+        </div>
+
+
+        <div class="maintenance-summary-card">
+
+            <div class="maintenance-summary-icon">
+                ◷
+            </div>
+
+            <div class="maintenance-summary-content">
+
+                <span>SCHEDULED</span>
+
+                <strong>@scheduled</strong>
+
+                <small>Awaiting maintenance</small>
+
+            </div>
+
+        </div>
+
+
+        <div class="maintenance-summary-card">
+
+            <div class="maintenance-summary-icon">
+                ↻
+            </div>
+
+            <div class="maintenance-summary-content">
+
+                <span>IN PROGRESS</span>
+
+                <strong>@inProgress</strong>
+
+                <small>Currently being worked on</small>
+
+            </div>
+
+        </div>
+
+
+        <div class="maintenance-summary-card">
+
+            <div class="maintenance-summary-icon">
+                ✓
+            </div>
+
+            <div class="maintenance-summary-content">
+
+                <span>COMPLETED</span>
+
+                <strong>@completed</strong>
+
+                <small>Successfully completed</small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MAIN PANEL -->
+    <section class="maintenance-panel">
+
+        <!-- PANEL HEADER -->
+        <div class="maintenance-panel-header">
+
+            <div>
+
+                <span class="panel-eyebrow">
+                    MAINTENANCE MANAGEMENT
+                </span>
+
+                <h2>
+                    Maintenance Records
+                </h2>
+
+                <p>
+                    Monitor scheduled and completed asset maintenance.
+                </p>
+
+            </div>
+
+            <div class="maintenance-record-count">
+
+                <span>≡</span>
+
+                <strong>
+                    @records.Count
+                </strong>
+
+                <span>
+                    record@(records.Count == 1 ? "" : "s")
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- FILTER BAR -->
+        <form asp-action="Index"
+              method="get"
+              class="maintenance-filters">
+
+            <div class="maintenance-search">
+
+                <span>⌕</span>
+
+                <input type="text"
+                       name="search"
+                       value="@ViewBag.Search"
+                       placeholder="Search by asset, technician or maintenance type..." />
+
+            </div>
+
+
+            <select name="status"
+                    class="maintenance-filter">
+
+                <option value="">All statuses</option>
+
+                <option value="Scheduled"
+                        selected="@(ViewBag.Status == "Scheduled")">
+                    Scheduled
+                </option>
+
+                <option value="In Progress"
+                        selected="@(ViewBag.Status == "In Progress")">
+                    In Progress
+                </option>
+
+                <option value="Completed"
+                        selected="@(ViewBag.Status == "Completed")">
+                    Completed
+                </option>
+
+            </select>
+
+
+            <select name="type"
+                    class="maintenance-filter">
+
+                <option value="">All types</option>
+
+                <option value="Inspection"
+                        selected="@(ViewBag.Type == "Inspection")">
+                    Inspection
+                </option>
+
+                <option value="Repair"
+                        selected="@(ViewBag.Type == "Repair")">
+                    Repair
+                </option>
+
+                <option value="Replacement"
+                        selected="@(ViewBag.Type == "Replacement")">
+                    Replacement
+                </option>
+
+                <option value="Upgrade"
+                        selected="@(ViewBag.Type == "Upgrade")">
+                    Upgrade
+                </option>
+
+                <option value="Cleaning"
+                        selected="@(ViewBag.Type == "Cleaning")">
+                    Cleaning
+                </option>
+
+            </select>
+
+
+            <button type="submit"
+                    class="maintenance-filter-button">
+
+                <span>⌕</span>
+
+                Filter
+
+            </button>
+
+
+            <a asp-action="Index"
+               class="maintenance-clear-button">
+
+                <span>×</span>
+
+                Clear
+
+            </a>
+
+        </form>
+
+
+        <!-- EMPTY -->
+        @if (!records.Any())
+        {
+            <div class="maintenance-empty">
+
+                <div class="maintenance-empty-icon">
+                    ↻
+                </div>
+
+                <span class="panel-eyebrow">
+                    NO RECORDS FOUND
+                </span>
+
+                <h3>
+                    No maintenance records
+                </h3>
+
+                <p>
+                    There are currently no maintenance records matching
+                    your search or filters.
+                </p>
+
+                <a asp-action="Create"
+                   class="nexus-primary-button">
+
+                    <span class="button-plus">+</span>
+
+                    Schedule Maintenance
+
+                </a>
+
+            </div>
+        }
+        else
+        {
+            <!-- TABLE -->
+            <div class="maintenance-table-wrapper">
+
+                <table class="maintenance-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ASSET</th>
+                            <th>TYPE</th>
+                            <th>SCHEDULED</th>
+                            <th>TECHNICIAN</th>
+                            <th>STATUS</th>
+                            <th>COST</th>
+                            <th>ACTIONS</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var record in records)
+                        {
+                            <tr>
+
+                                <!-- ASSET -->
+                                <td>
+
+                                    <div class="maintenance-asset">
+
+                                        <div class="maintenance-asset-icon">
+                                            ▣
+                                        </div>
+
+                                        <div class="maintenance-asset-details">
+
+                                            @if (record.Asset != null)
+                                            {
+                                                <strong>
+                                                    @record.Asset.AssetTag
+                                                </strong>
+
+                                                <span>
+                                                    @record.Asset.Brand @record.Asset.Model
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <strong>
+                                                    Unassigned
+                                                </strong>
+
+                                                <span>
+                                                    No asset assigned
+                                                </span>
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- TYPE -->
+                                <td>
+
+                                    <div class="maintenance-type-cell">
+
+                                        <span class="maintenance-type-icon">
+
+                                            @if (record.MaintenanceType == "Inspection")
+                                            {
+                                                @:⌕
+                                            }
+                                            else if (record.MaintenanceType == "Repair")
+                                            {
+                                                @:⚒
+                                            }
+                                            else if (record.MaintenanceType == "Replacement")
+                                            {
+                                                @:↻
+                                            }
+                                            else if (record.MaintenanceType == "Upgrade")
+                                            {
+                                                @:↑
+                                            }
+                                            else
+                                            {
+                                                @:◆
+                                            }
+
+                                        </span>
+
+                                        <span class="maintenance-type">
+                                            @record.MaintenanceType
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- DATE -->
+                                <td>
+
+                                    <div class="maintenance-date">
+
+                                        <strong>
+                                            @record.ScheduledDate.ToString("dd MMM yyyy")
+                                        </strong>
+
+                                        @if (record.Status == "Completed" &&
+                                                                        record.CompletedDate.HasValue)
+                                        {
+                                            <span class="completed-date">
+                                                ✓ Completed
+                                                @record.CompletedDate.Value.ToString("dd MMM yyyy")
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span>
+                                                Scheduled date
+                                            </span>
+                                        }
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- TECHNICIAN -->
+                                <td>
+
+                                    @if (!string.IsNullOrWhiteSpace(record.Technician))
+                                    {
+                                        var technicianName = record.Technician.Trim();
+                                        var technicianInitial =
+                                        technicianName.Substring(0, 1).ToUpper();
+
+                                        <div class="maintenance-technician">
+
+                                            <div class="technician-avatar">
+                                                @technicianInitial
+                                            </div>
+
+                                            <span>
+                                                @technicianName
+                                            </span>
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="maintenance-unassigned">
+                                            Unassigned
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- STATUS -->
+                                <td>
+
+                                    @if (record.Status == "Scheduled")
+                                    {
+                                        <span class="maintenance-status status-scheduled">
+                                            Scheduled
+                                        </span>
+                                    }
+                                    else if (record.Status == "In Progress")
+                                    {
+                                        <span class="maintenance-status status-progress">
+                                            In Progress
+                                        </span>
+                                    }
+                                    else if (record.Status == "Completed")
+                                    {
+                                        <span class="maintenance-status status-completed">
+                                            Completed
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="maintenance-status">
+                                            @record.Status
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- COST -->
+                                <td>
+
+                                    @if (record.Cost.HasValue)
+                                    {
+                                        <strong class="maintenance-cost">
+                                            @record.Cost.Value.ToString("C2")
+                                        </strong>
+                                    }
+                                    else
+                                    {
+                                        <span class="maintenance-no-cost">
+                                            —
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- ACTIONS -->
+                                <td>
+
+                                    <div class="maintenance-actions">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@record.Id"
+                                           class="maintenance-action view"
+                                           title="View">
+
+                                            ◉
+
+                                        </a>
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@record.Id"
+                                           class="maintenance-action edit"
+                                           title="Edit">
+
+                                            ✎
+
+                                        </a>
+
+                                        @if (record.Status == "Scheduled")
+                                        {
+                                            <a asp-action="Start"
+                                               asp-route-id="@record.Id"
+                                               class="maintenance-action start"
+                                               title="Start">
+
+                                                ▶
+
+                                            </a>
+                                        }
+
+                                        @if (record.Status == "In Progress")
+                                        {
+                                            <a asp-action="Complete"
+                                               asp-route-id="@record.Id"
+                                               class="maintenance-action complete"
+                                               title="Complete">
+
+                                                ✓
+
+                                            </a>
+                                        }
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@record.Id"
+                                           class="maintenance-action delete"
+                                           title="Delete">
+
+                                            ⌫
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <div class="maintenance-page-footer">
+
+        <span>
+            © @DateTime.Now.Year NexusIT
+        </span>
+
+        <span class="footer-divider"></span>
+
+        <span>
+            IT Asset &amp; Infrastructure Management
+        </span>
+
+    </div>
+
+</div>

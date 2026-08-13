@@ -1,0 +1,707 @@
+@using Microsoft.AspNetCore.Identity
+@using NexusIT.Data
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+    var pageTitle = ViewData["Title"]?.ToString() ?? "Dashboard";
+
+    var username = User.Identity?.Name ?? "User";
+    var userRoles = User.IsInRole(AuthorizationRoles.Administrator) ? "Administrator"
+        : User.IsInRole(AuthorizationRoles.ITManager) ? "IT Manager"
+        : User.IsInRole(AuthorizationRoles.ITTechnician) ? "IT Technician"
+        : "Employee";
+
+    var userInitial = !string.IsNullOrWhiteSpace(username)
+        ? username.Substring(0, 1).ToUpperInvariant()
+        : "U";
+
+    bool IsActive(string controller)
+    {
+        return string.Equals(
+            currentController,
+            controller,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    bool IsDashboardActive()
+    {
+        return string.Equals(
+            currentController,
+            "Home",
+            StringComparison.OrdinalIgnoreCase);
+    }
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <meta name="theme-color"
+          content="#07090d" />
+
+    <meta name="color-scheme"
+          content="dark" />
+
+    <meta name="description"
+          content="NexusIT IT Asset & Infrastructure Management Platform" />
+
+    <meta name="application-name"
+          content="NexusIT" />
+
+    <title>
+        @pageTitle - NexusIT
+    </title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+
+<body>
+
+    <!-- =========================================================
+         APPLICATION
+         ========================================================= -->
+
+    <div class="nexus-app">
+
+
+        <!-- =====================================================
+             MOBILE OVERLAY
+             ===================================================== -->
+
+        <div class="sidebar-overlay"
+             id="sidebarOverlay"
+             aria-hidden="true">
+        </div>
+
+
+        <!-- =====================================================
+             SIDEBAR
+             ===================================================== -->
+
+        <aside class="nexus-sidebar"
+               id="nexusSidebar"
+               aria-label="Main navigation">
+
+
+            <!-- =================================================
+                 BRAND
+                 ================================================= -->
+
+            <div class="sidebar-brand">
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="sidebar-brand-link"
+                   aria-label="NexusIT Dashboard">
+
+                    <div class="brand-mark">
+                        N
+                    </div>
+
+                    <div class="brand-text">
+
+                        <strong>
+                            NEXUS
+                        </strong>
+
+                        <span>
+                            IT MANAGEMENT
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <!-- =================================================
+                 WORKSPACE
+                 ================================================= -->
+
+            <div class="sidebar-section">
+
+                <span class="sidebar-label">
+                    WORKSPACE
+                </span>
+
+                <nav class="sidebar-nav"
+                     aria-label="Workspace navigation">
+
+
+                    <!-- DASHBOARD -->
+
+                    <a asp-controller="Home"
+                       asp-action="Index"
+                       class="sidebar-link @(IsDashboardActive() ? "active" : "")"
+                       aria-current="@(IsDashboardActive() ? "page" : null)">
+
+                        <span class="nav-icon">
+                            ⌂
+                        </span>
+
+                        <span>
+                            Dashboard
+                        </span>
+
+                    </a>
+
+
+                    @if (User.IsInRole(AuthorizationRoles.Administrator) || User.IsInRole(AuthorizationRoles.ITManager))
+                    {
+                    <!-- EMPLOYEES -->
+
+                    <a asp-controller="Employees"
+                       asp-action="Index"
+                       class="sidebar-link @(IsActive("Employees") ? "active" : "")"
+                       aria-current="@(IsActive("Employees") ? "page" : null)">
+
+                        <span class="nav-icon">
+                            ♙
+                        </span>
+
+                        <span>
+                            Employees
+                        </span>
+
+                    </a>
+                    }
+
+
+                    <!-- ASSETS -->
+
+                    <a asp-controller="Assets"
+                       asp-action="Index"
+                       class="sidebar-link @(IsActive("Assets") ? "active" : "")"
+                       aria-current="@(IsActive("Assets") ? "page" : null)">
+
+                        <span class="nav-icon">
+                            ▣
+                        </span>
+
+                        <span>
+                            Assets
+                        </span>
+
+                    </a>
+
+
+                    <!-- TICKETS -->
+
+                    <a asp-controller="SupportTickets"
+                       asp-action="Index"
+                       class="sidebar-link @(IsActive("SupportTickets") ? "active" : "")"
+                       aria-current="@(IsActive("SupportTickets") ? "page" : null)">
+
+                        <span class="nav-icon">
+                            ◇
+                        </span>
+
+                        <span>
+                            Tickets
+                        </span>
+
+                    </a>
+
+
+                    <!-- MAINTENANCE -->
+
+                    <a asp-controller="Maintenance"
+                       asp-action="Index"
+                       class="sidebar-link @(IsActive("Maintenance") ? "active" : "")"
+                       aria-current="@(IsActive("Maintenance") ? "page" : null)">
+
+                        <span class="nav-icon">
+                            ↻
+                        </span>
+
+                        <span>
+                            Maintenance
+                        </span>
+
+                    </a>
+
+                </nav>
+
+            </div>
+
+
+            <!-- =================================================
+                 ANALYTICS
+                 ================================================= -->
+
+            <div class="sidebar-section">
+
+                <span class="sidebar-label">
+                    ANALYTICS
+                </span>
+
+                <nav class="sidebar-nav"
+                     aria-label="Analytics navigation">
+
+
+                    @if (User.IsInRole(AuthorizationRoles.Administrator) || User.IsInRole(AuthorizationRoles.ITManager))
+                    {
+                    <!-- REPORTS -->
+
+                    <a asp-controller="Reports"
+                       asp-action="Index"
+                       class="sidebar-link @(IsActive("Reports") ? "active" : "")"
+                       aria-current="@(IsActive("Reports") ? "page" : null)">
+
+                        <span class="nav-icon">
+                            ▥
+                        </span>
+
+                        <span>
+                            Reports
+                        </span>
+
+                    </a>
+                    }
+
+
+                    @if (User.IsInRole(AuthorizationRoles.Administrator) || User.IsInRole(AuthorizationRoles.ITManager))
+                    {
+                    <!-- ACTIVITY LOG -->
+
+                    <a asp-controller="ActivityLogs"
+                       asp-action="Index"
+                       class="sidebar-link @(IsActive("ActivityLogs") ? "active" : "")"
+                       aria-current="@(IsActive("ActivityLogs") ? "page" : null)">
+
+                        <span class="nav-icon">
+                            ◌
+                        </span>
+
+                        <span>
+                            Activity Log
+                        </span>
+
+                    </a>
+                    }
+
+                </nav>
+
+            </div>
+
+
+            <!-- =================================================
+                 SETTINGS / HELP
+                 ================================================= -->
+
+            <div class="sidebar-section sidebar-bottom">
+
+                <nav class="sidebar-nav"
+                     aria-label="System navigation">
+
+
+                    @if (User.IsInRole(AuthorizationRoles.Administrator))
+                    {
+                        <a asp-controller="Admin" asp-action="Index" class="sidebar-link @(IsActive("Admin") ? "active" : "")">
+                            <span class="nav-icon">♙</span>
+                            <span>User Management</span>
+                        </a>
+                    }
+
+                    @if (User.IsInRole(AuthorizationRoles.Administrator))
+                    {
+                    <!-- SETTINGS -->
+
+                    <a asp-controller="Settings"
+                       asp-action="Index"
+                       class="sidebar-link @(IsActive("Settings") ? "active" : "")"
+                       aria-current="@(IsActive("Settings") ? "page" : null)">
+
+                        <span class="nav-icon">
+                            ⚙
+                        </span>
+
+                        <span>
+                            Settings
+                        </span>
+
+                    </a>
+                    }
+
+
+                    <!-- HELP -->
+
+                    <a asp-controller="Help"
+                       asp-action="Index"
+                       class="sidebar-link @(IsActive("Help") ? "active" : "")"
+                       aria-current="@(IsActive("Help") ? "page" : null)">
+
+                        <span class="nav-icon">
+                            ?
+                        </span>
+
+                        <span>
+                            Help & Support
+                        </span>
+
+                    </a>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <form asp-area="Identity"
+                              asp-page="/Account/Logout"
+                              method="post"
+                              class="logout-form">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit" class="sidebar-link logout-link">
+
+                                <span class="nav-icon">
+                                    ↪
+                                </span>
+
+                                <span>
+                                    Logout
+                                </span>
+
+                            </button>
+
+                        </form>
+                    }
+
+                </nav>
+
+            </div>
+
+
+            <!-- =================================================
+                 SYSTEM STATUS
+                 ================================================= -->
+
+            <div class="sidebar-footer">
+
+                <div class="system-status">
+
+                    <span class="status-indicator"></span>
+
+                    <div>
+
+                        <strong>
+                            System Operational
+                        </strong>
+
+                        <span>
+                            All services running
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================================
+             MAIN APPLICATION
+             ===================================================== -->
+
+        <div class="nexus-main">
+
+
+            <!-- =================================================
+                 TOPBAR
+                 ================================================= -->
+
+            <header class="nexus-topbar">
+
+
+                <!-- LEFT -->
+
+                <div class="topbar-left">
+
+
+                    <!-- MOBILE MENU -->
+
+                    <button type="button"
+                            class="mobile-menu-button"
+                            id="mobileMenuButton"
+                            aria-label="Open navigation menu"
+                            aria-controls="nexusSidebar"
+                            aria-expanded="false">
+
+                        <span>
+                            ☰
+                        </span>
+
+                    </button>
+
+
+                    <!-- BREADCRUMB -->
+
+                    <div class="breadcrumb">
+
+                        <span>
+                            NexusIT
+                        </span>
+
+                        <span class="breadcrumb-separator">
+                            /
+                        </span>
+
+                        <strong>
+                            @pageTitle
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RIGHT -->
+
+                <div class="topbar-right">
+
+
+                    <!-- NOTIFICATIONS -->
+
+                    <button type="button"
+                            class="topbar-icon-button"
+                            title="Notifications"
+                            aria-label="Notifications">
+
+                        <span>
+                            ♢
+                        </span>
+
+                        <span class="notification-dot"></span>
+
+                    </button>
+
+
+                    <div class="topbar-divider"></div>
+
+
+                    <!-- =================================================
+                         AUTHENTICATED USER
+                         ================================================= -->
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+
+                        <div class="user-area"
+                             id="userArea">
+
+
+                            <!-- USER BUTTON -->
+
+                            <button type="button"
+                                    class="user-menu-button"
+                                    id="userMenuButton"
+                                    aria-label="Open user menu"
+                                    aria-expanded="false"
+                                    aria-controls="userDropdown">
+
+
+                                <span class="user-avatar">
+                                    @userInitial
+                                </span>
+
+
+                                <span class="user-details">
+
+                                    <strong>
+                                        @username
+                                    </strong>
+
+                                    <span>
+                                        @userRoles
+                                    </span>
+
+                                </span>
+
+
+                                <span class="user-chevron">
+                                    ▾
+                                </span>
+
+                            </button>
+
+
+                            <!-- USER DROPDOWN -->
+
+                            <div class="user-dropdown"
+                                 id="userDropdown"
+                                 hidden>
+
+                                <div class="user-dropdown-header">
+
+                                    <div class="user-dropdown-avatar">
+                                        @userInitial
+                                    </div>
+
+                                    <div class="user-dropdown-user-info">
+
+                                        <strong>
+                                            @username
+                                        </strong>
+
+                                        <span>
+                                            NexusIT Administrator
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="user-dropdown-divider"></div>
+
+                                <a asp-controller="Settings"
+                                   asp-action="Index"
+                                   class="user-dropdown-link">
+
+                                    <span>
+                                        ⚙
+                                    </span>
+
+                                    <span>
+                                        Settings
+                                    </span>
+
+                                </a>
+
+                                <div class="user-dropdown-divider"></div>
+
+                                <form asp-area="Identity"
+                                      asp-page="/Account/Logout"
+                                      method="post"
+                                      class="logout-form">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="user-dropdown-link user-dropdown-logout">
+
+                                        <span>
+                                            ↪
+                                        </span>
+
+                                        <span>
+                                            Sign out
+                                        </span>
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    }
+                    else
+                    {
+
+                        <!-- =================================================
+                             LOGGED OUT
+                             ================================================= -->
+
+                        <div class="auth-links">
+
+                            <a asp-area="Identity"
+                               asp-page="/Account/Login">
+
+                                Login
+
+                            </a>
+
+                            <a asp-area="Identity"
+                               asp-page="/Account/Register"
+                               class="auth-register">
+
+                                Register
+
+                            </a>
+
+                        </div>
+
+                    }
+
+                </div>
+
+            </header>
+
+
+            <!-- =====================================================
+                 PAGE CONTENT
+                 ===================================================== -->
+
+            <main class="nexus-content">
+
+                @RenderBody()
+
+            </main>
+
+
+            <!-- =====================================================
+                 FOOTER
+                 ===================================================== -->
+
+            <footer class="nexus-footer">
+
+                <span>
+                    © @DateTime.Now.Year NexusIT
+                </span>
+
+                <span>
+                    IT Asset & Infrastructure Management
+                </span>
+
+            </footer>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+         ========================================================= -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>
